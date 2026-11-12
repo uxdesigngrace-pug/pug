@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en" data-notes="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IdahoSTARS RISE &middot; Grace Gwe</title>
+<meta name="description" content="Redesigning the Professional Development Record: eight kinds of proof on one table pattern, with seven microinteractions annotated for developers.">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --sky-1:#FFFFFF; --sky-mid:#FAFAFC; --sky-2:#F1F2F7;
+  --paper:rgba(255,255,255,.82); --paper-2:rgba(255,255,255,.7);
+  --ink:#14161C; --ink-70:rgba(20,22,28,.72); --ink-45:rgba(20,22,28,.5);
+  --ink-muted:rgba(20,22,28,.74); --line:rgba(20,22,28,.16);
+  --edge:rgba(255,255,255,.95); --ultra:#5B2BB8; --on-solid:#fff;
+  --radius:14px; --surface-shadow:0 10px 28px rgba(20,22,28,.09);
+  --display:"Plus Jakarta Sans","Helvetica Neue",Arial,sans-serif;
+  --body:"Plus Jakarta Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --pad:clamp(20px,5vw,72px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(to bottom,var(--sky-1),var(--sky-mid) 52%,var(--sky-2)) fixed;color:var(--ink);transition:color 1.2s;font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-width:100%;display:block}
+::selection{background:var(--ultra);color:var(--paper)}
+:focus-visible{outline:2px solid var(--ultra);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--pad)}
+.narrow{max-width:760px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-45);margin:0}
+
+/* top bar + scroll progress */
+.bar{position:fixed;top:0;left:0;right:0;z-index:40;background:transparent}
+.bar-in{display:flex;align-items:center;justify-content:space-between;height:58px;font-family:var(--mono);font-size:12px}
+.hero{padding-top:calc(58px + clamp(44px,7vw,88px))}
+.bar a{text-decoration:none;color:var(--ink-70);transition:color .18s}
+.bar a:hover{color:var(--ultra)}
+.pct{color:var(--ink-45);letter-spacing:.08em}
+.prog{position:absolute;left:0;bottom:-1px;height:2px;background:var(--ultra);width:0;transition:width .12s linear}
+
+/* hero */
+.hero{padding:clamp(44px,7vw,88px) 0 clamp(24px,4vw,44px)}
+.kicker{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+.kicker .slash{color:var(--ultra);font-family:var(--mono);font-size:11px}
+.h1{font-family:var(--display);font-weight:800;font-size:clamp(36px,6.2vw,74px);line-height:.96;letter-spacing:-.035em;margin:0;text-wrap:balance;max-width:16ch}
+.h1 em{font-style:italic;font-weight:400;color:var(--ultra)}
+.hero-shot{margin-top:clamp(28px,4vw,48px)}
+
+/* meta bar */
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+@media(max-width:820px){.meta{grid-template-columns:1fr 1fr}}
+.meta div{background:var(--paper);padding:20px}
+.meta h3{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.01em;line-height:1.35;margin:10px 0 0}
+
+/* sections */
+.sec{padding:clamp(48px,7vw,92px) 0}
+.h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.6vw,42px);letter-spacing:-.03em;line-height:1.02;margin:10px 0 0}
+.h2 em{font-style:italic;font-weight:400;color:var(--ultra)}
+.lede{font-size:clamp(18px,2.2vw,22px);line-height:1.5;margin:22px 0 0}
+.body{color:var(--ink-70);margin:18px 0 0}
+
+.steps{list-style:none;padding:0;margin:26px 0 0;border-top:1px solid var(--line)}
+.steps li{display:flex;gap:18px;padding:16px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.steps b{font-family:var(--mono);font-size:11.5px;color:var(--ultra);font-weight:500;flex:none}
+
+/* chapters */
+.chapter{padding:clamp(36px,5vw,64px) 0}
+.chapter-head{max-width:720px;margin-bottom:26px}
+.chapter-head h3{font-family:var(--display);font-weight:600;font-size:clamp(21px,2.7vw,30px);letter-spacing:-.02em;line-height:1.12;margin:12px 0 0}
+.chapter-head p{color:var(--ink-70);margin:14px 0 0;font-size:17px}
+
+/* figures: drop a real file in and it appears; otherwise a tinted placeholder */
+.shot{width:100%;aspect-ratio:16/10;object-fit:cover;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-2);backdrop-filter:blur(13px);box-shadow:inset 0 1px 0 var(--edge)}
+.shot.ph{position:relative}
+figure{margin:0}
+figcaption{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-45);margin-top:10px}
+
+/* outcomes */
+.outs{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:30px}
+@media(max-width:820px){.outs{grid-template-columns:1fr}}
+.out{background:var(--paper);padding:26px 22px 30px}
+.out .num{font-family:var(--display);font-weight:800;font-size:clamp(30px,4vw,44px);letter-spacing:-.03em;color:var(--ultra);line-height:1}
+.out h4{font-family:var(--display);font-weight:600;font-size:17px;margin:14px 0 8px;letter-spacing:-.01em}
+.out p{margin:0;font-size:15.5px;color:var(--ink-70);line-height:1.5}
+
+/* next + cta */
+.next{border-top:1px solid var(--ink);padding:clamp(44px,6vw,80px) 0 34px}
+.big-link{display:block;text-decoration:none;font-family:var(--display);font-weight:800;letter-spacing:-.035em;font-size:clamp(28px,6vw,66px);line-height:1;margin:12px 0 0;transition:color .2s}
+.big-link:hover{color:var(--ultra)}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:26px 0 40px;font-family:var(--mono);font-size:11.5px;color:var(--ink-45)}
+.foot a{text-decoration:none;color:var(--ink-70);margin-right:16px}
+.foot a:hover{color:var(--ultra)}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+
+/* ── theme switcher ──────────────────────────────── */
+.tod{position:fixed;right:clamp(10px,1.8vw,22px);top:50%;transform:translateY(-50%);z-index:70;
+  display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:6px 6px 7px;
+  border-radius:28px;background:var(--paper-2);border:1px solid var(--line);
+  backdrop-filter:blur(12px);box-shadow:var(--surface-shadow,none), inset 0 1px 0 var(--edge);
+  transition:background 1.2s,border-color 1.2s,box-shadow 1.2s}
+.tod button{width:44px;height:44px;flex:none;align-self:center;border:0;border-radius:50%;background:transparent;cursor:pointer;
+  color:var(--ink-muted);display:grid;place-items:center;
+  transition:background .25s,color .25s,transform .25s}
+.tod button:hover{background:var(--paper);transform:scale(1.06)}
+.tod button[aria-pressed="true"]{background:var(--ink);color:var(--on-solid)}
+.tod svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.tod .auto{position:relative;width:calc(100% - 2px);height:auto;padding:7px 0 5px;
+  margin:7px 1px 0;border-radius:11px;text-align:center;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-45);background:transparent;box-shadow:none}
+.tod .auto::before{content:"";position:absolute;top:-3px;left:20%;right:20%;height:1px;
+  background:var(--line)}
+.tod .auto:hover{background:var(--paper);color:var(--ink-muted);transform:none}
+.tod .auto[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:none}
+/* ── mobile: the rail collapses to the one icon that is currently live ── */
+@media(max-width:760px){
+  .tod{right:10px;padding:5px;gap:3px;border-radius:30px;
+    max-height:50px;overflow:hidden;
+    transition:max-height .34s cubic-bezier(.2,.8,.2,1),padding .34s,background 1.2s,border-color 1.2s}
+  .tod.open{max-height:240px;padding:5px 5px 9px}
+  /* the live icon sits slightly proud so the circle reads as a button, not a chip */
+  .tod:not(.open) button.is-now{background:var(--paper);color:var(--ink)}
+
+  /* collapsed: every control is hidden except the live one */
+  .tod button{width:40px;height:40px;order:2;
+    opacity:0;pointer-events:none;transform:scale(.86);
+    transition:opacity .2s,transform .2s,background .25s,color .25s}
+  .tod button.is-now{order:1;opacity:1;pointer-events:auto;transform:none}
+  .tod.open button{opacity:1;pointer-events:auto;transform:none}
+
+  /* the AUTO pill is a wide text control — it never fits the collapsed rail */
+  .tod .auto{display:none;order:3}
+  .tod.open .auto{display:block}
+
+  .tod svg{width:17px;height:17px}
+}
+
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}
+
+
+/* ── Grace's logo, lifted from the landing page ───────────────────────── */
+/* --pad is the landing page's content inset, so the logo, the bar and the
+   first column of prose all start on the same line as they do there */
+/* The wordmark is the only thing pinned now, so it needs its own ground:
+   without it the page scrolls straight under the letters. Same frosted pill
+   the theme dial uses. */
+.mark{position:fixed;top:11px;left:var(--pad);z-index:81;height:42px;
+  display:inline-flex;align-items:center;gap:10px;color:var(--ink);
+  text-decoration:none;padding:0 15px 0 9px;border-radius:99px;
+  background:var(--paper,rgba(255,255,255,.72));border:1px solid var(--line);
+  backdrop-filter:blur(12px) saturate(1.4);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);
+  box-shadow:0 4px 18px rgba(20,22,28,.08);transition:color 1.2s}
+.logo{width:28px;height:28px;flex:none;overflow:visible;display:block}
+.mark-t{font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:-.03em}
+.mark:hover .lg-h1{transform:translateX(3px)}
+.mark:hover .lg-h2{transform:translateX(-3px)}
+.mark:hover .lg-arc{transform:rotate(-8deg);transform-origin:32px 32px;transform-box:view-box}
+.logo path{transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+@media(max-width:560px){.mark-t{display:none}}
+
+/* the faint column grid that runs the whole page */
+.grid-lines{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(to right,transparent 0,transparent calc(8.333% - 1px),
+    var(--grid,rgba(20,22,28,.045)) calc(8.333% - 1px),var(--grid,rgba(20,22,28,.045)) 8.333%)}
+
+/* ── top bar ──────────────────────────────────────────────────────────── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:80;height:58px;
+  display:flex;align-items:center;justify-content:flex-end;gap:14px;
+  padding:0 var(--pad);
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-70);
+  background:linear-gradient(180deg,var(--paper),var(--paper-2)),
+             linear-gradient(to bottom,var(--sky-1),var(--sky-mid));
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+/* clears the wordmark, which is fixed at --pad */
+.crumb{display:flex;gap:18px;margin-right:auto;margin-left:clamp(140px,13vw,210px)}
+.crumb a{text-decoration:none;color:var(--ink-70)}
+.crumb b{color:var(--ink);font-weight:500}
+.switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;
+  border:1px solid var(--line);border-radius:99px;padding:6px 13px 6px 9px;
+  background:transparent;font:inherit;font-family:var(--mono);font-size:11.5px;
+  color:var(--ink-70);transition:.16s}
+.switch:hover{border-color:var(--ink-70);color:var(--ink)}
+.switch i{width:26px;height:15px;border-radius:99px;background:var(--line);
+  position:relative;transition:background .2s;flex:none}
+.switch i::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;
+  border-radius:50%;background:var(--sky-1);transition:transform .22s cubic-bezier(.2,.9,.25,1)}
+.switch[aria-pressed="true"]{color:var(--ink);border-color:var(--tok);background:var(--tok-bg)}
+.switch[aria-pressed="true"] i{background:var(--tok)}
+.switch[aria-pressed="true"] i::after{transform:translateX(11px)}
+@media(max-width:760px){.crumb{display:none}}
+
+/* ── the two columns ──────────────────────────────────────────────────── */
+.cs{position:relative;z-index:1;display:grid;
+  grid-template-columns:minmax(0,41fr) minmax(0,59fr);padding-top:58px}
+.col{padding:0 clamp(26px,3.4vw,56px) 0 var(--pad);
+  border-right:1px solid var(--line)}
+/* The stage is lit, not flat: a cool wash from the top, the theme's own warm
+   glow from the bottom right, and a fine dot grid over both. Every layer is
+   built from tokens applyTheme already sets, so morning, afternoon and night
+   each get their own backdrop with nothing hard-coded. */
+.stage{position:sticky;top:58px;height:calc(100vh - 58px);
+  display:grid;grid-template-rows:1fr auto;overflow:hidden;
+  /* every var carries a fallback: one undefined custom property makes the whole
+     shorthand invalid, and the stage silently loses its background */
+  background:
+    /* a white veil sits over the theme wash so the product stage stays lighter
+       than the page; afternoon needs the most, night none at all */
+    linear-gradient(var(--stage-veil, transparent), var(--stage-veil, transparent)),
+    radial-gradient(100% 62% at 50% -8%, var(--tok-bg, transparent), transparent 64%),
+    radial-gradient(78% 56% at 88% 108%, var(--glow, transparent), transparent 62%),
+    linear-gradient(to bottom, var(--sky-mid, #FAFAFC), var(--sky-2, #F1F2F7))}
+.stage::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(var(--line) .9px, transparent .9px);
+  background-size:22px 22px;opacity:.5;
+  -webkit-mask-image:radial-gradient(76% 60% at 50% 46%, #000 30%, transparent 78%);
+  mask-image:radial-gradient(76% 60% at 50% 46%, #000 30%, transparent 78%)}
+.plate{position:relative;overflow:hidden}
+.art{position:absolute;inset:0;display:grid;place-items:center;
+  /* extra room on the right so the theme rail never sits on the artefact */
+  padding:clamp(20px,3.4vw,54px) clamp(74px,6vw,96px) clamp(20px,3.4vw,54px) clamp(20px,3.4vw,54px);opacity:0;visibility:hidden;transform:scale(.985);
+  transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.25,1),visibility .5s}
+.art.on{opacity:1;visibility:visible;transform:none}
+/* ── devices ───────────────────────────────────────────────────────────
+   The screenshots sit in hardware rather than floating as bare rectangles.
+   The frame borrows --vac-* — the same pair of palettes ugu's robot vacuum
+   uses — because those already flip with the theme: a dark phone on a light
+   stage, a pale one at night, so the device never sinks into the backdrop. */
+.dev{position:relative;z-index:1;margin:0;
+  --frame:var(--vac-shell); --frame-hi:var(--vac-top); --frame-line:var(--vac-line);
+  transform:perspective(1400px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))
+            translateY(var(--ty,0px)) scale(var(--sc,1));
+  transition:transform .55s cubic-bezier(.2,.9,.25,1), box-shadow .55s ease;
+  will-change:transform}
+.dev .scr{display:block;overflow:hidden;background:var(--frame-hi);position:relative}
+.dev img{display:block;width:100%;height:auto;
+  /* --sy is driven by how far the story has scrolled through this section */
+  transform:translateY(var(--sy,0px));
+  transition:transform .18s linear;will-change:transform}
+/* a screen is a screen: fixed proportions, with anything taller scrolling
+   inside it rather than being squashed down to fit */
+.dev.phone .scr{aspect-ratio:9 / 19.5}
+.dev.laptop .scr{aspect-ratio:16 / 10}
+/* a hairline that fills as the content inside scrolls, so it is clear there
+   is more of the document than the screen is showing */
+.dev .scrollbar{position:absolute;right:3px;top:6px;bottom:6px;width:2px;
+  border-radius:2px;background:var(--frame-line);opacity:0;transition:opacity .3s;z-index:4}
+.dev.scrolls .scrollbar{opacity:.3}
+.dev .scrollbar i{position:absolute;left:0;right:0;top:0;border-radius:2px;
+  background:var(--frame-hi);height:var(--thumb,30%);
+  transform:translateY(var(--thumbY,0));transition:transform .18s linear}
+
+/* A phone in the current idiom: a thin even bezel, a tight corner radius, a
+   pill cutout at the top and a brushed rail down each side. Deliberately
+   generic hardware — no maker's industrial design is being copied. */
+.dev.phone{--bez:5px;border-radius:34px;padding:var(--bez);
+  background:
+    linear-gradient(104deg, var(--frame) 0 2%, var(--frame-hi) 4% 6%,
+                    var(--frame) 9% 91%, var(--frame-hi) 94% 96%, var(--frame) 98%);
+  box-shadow:0 0 0 1px var(--frame-line),
+             0 1px 0 rgba(255,255,255,.22) inset,
+             0 30px 56px -20px rgba(12,10,28,.55)}
+.dev.phone .scr{border-radius:29px}
+.dev.phone::before{content:"";position:absolute;top:calc(var(--bez) + 6px);left:50%;
+  transform:translateX(-50%);width:26%;height:8px;border-radius:99px;
+  background:#0A0A0C;z-index:3;opacity:.95}
+/* the side buttons */
+.dev.phone::after{content:"";position:absolute;left:-2px;top:21%;width:2px;height:7%;
+  border-radius:2px;background:var(--frame-hi);
+  box-shadow:0 10% 0 var(--frame-hi), 0 0 0 0 transparent,
+             2px 0 0 -1px transparent, 0 calc(9% + 7px) 0 var(--frame-hi)}
+
+/* A laptop in the current idiom: very thin bezel, a small camera notch, and a
+   tapered base below the hinge. Generic hardware, same as the phone. */
+.dev.laptop{--bez:7px;border-radius:14px 14px 5px 5px;padding:var(--bez) var(--bez) 11px;
+  background:linear-gradient(168deg,var(--frame-hi),var(--frame) 42%);
+  box-shadow:0 0 0 1px var(--frame-line),
+             0 1px 0 rgba(255,255,255,.2) inset,
+             0 34px 60px -22px rgba(12,10,28,.55)}
+.dev.laptop .scr{border-radius:7px}
+.dev.laptop::before{content:"";position:absolute;top:calc(var(--bez) - 4px);left:50%;
+  transform:translateX(-50%);width:13%;height:7px;border-radius:0 0 6px 6px;
+  background:var(--frame);z-index:3}
+.dev.laptop::after{content:"";position:absolute;left:-9%;right:-9%;bottom:-8px;height:8px;
+  border-radius:0 0 12px 12px;
+  background:linear-gradient(to bottom,var(--frame-hi),var(--frame) 55%,var(--frame-line));
+  box-shadow:0 12px 26px -10px rgba(12,10,28,.55)}
+
+/* idle drift, so the stage is never completely still */
+@keyframes devFloat{from{transform:translateY(0)}to{transform:translateY(-7px)}}
+.dev-float{animation:devFloat var(--d,5.5s) ease-in-out infinite alternate;
+  animation-delay:var(--dl,0s)}
+
+.art.trio{grid-auto-flow:column;gap:clamp(10px,1.4vw,22px);align-items:center}
+.art.trio .dev.phone{width:clamp(120px,15vw,228px)}
+.art.trio .dev.phone:nth-child(2){--sc:1.06;z-index:2}
+/* the screen's aspect ratio bounds the height now, so the laptop can be sized
+   by width again and the document scrolls inside it */
+.art .dev.laptop{width:min(100%,740px)}
+/* the hovered device lifts and the others step back */
+.art:hover .dev{--sc:.985;filter:saturate(.92)}
+.art .dev:hover{--ty:-10px;--sc:1.05;filter:none;z-index:3}
+.art.trio:hover .dev.phone:nth-child(2):not(:hover){--sc:1}
+.zoomable{cursor:zoom-in}
+@media(prefers-reduced-motion:reduce){
+  .dev{transition:none;--rx:0deg !important;--ry:0deg !important}
+  .dev-float{animation:none}}
+.cap{border-top:1px solid var(--line);padding:11px 16px;
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-70);
+  display:flex;justify-content:space-between;gap:16px;background:var(--sky-1)}
+
+/* ── prose ────────────────────────────────────────────────────────────── */
+/* the base sheet styles .meta as a four-up bordered strip; here it is a
+   definition list, so its background, border and columns are all reset */
+.meta{padding:clamp(34px,6vh,70px) 0 0;display:grid;grid-template-columns:76px 1fr;
+  gap:7px 16px;font-size:13.5px;background:none;border:0}
+.meta dt{font-family:var(--mono);font-size:10.5px;color:var(--ink-70);padding-top:3px}
+.meta dd{margin:0;color:var(--ink)}
+h1.t{font-family:var(--display);font-weight:800;font-size:clamp(28px,3.2vw,44px);
+  line-height:1.02;letter-spacing:-.035em;margin:clamp(26px,4.5vh,50px) 0 0;max-width:15ch}
+.claim{font-family:var(--display);font-weight:400;font-style:italic;
+  font-size:clamp(17px,1.7vw,23px);line-height:1.25;color:var(--tok);
+  margin:14px 0 0;max-width:24ch}
+.sec{padding:clamp(34px,7vh,80px) 0 0;max-width:46ch}
+.sec:last-of-type{padding-bottom:70vh}
+/* authored in sentence case, so the base sheet's uppercase is reset */
+.eyebrow{font-family:var(--mono);font-size:10.5px;color:var(--tok);margin:0 0 12px;
+  text-transform:none;letter-spacing:.04em}
+.sec h2{font-family:var(--display);font-weight:800;font-size:clamp(21px,2.1vw,30px);
+  line-height:1.1;letter-spacing:-.028em;margin:0 0 14px}
+.sec p{margin:0 0 15px;color:var(--ink-muted);font-size:15.5px;line-height:1.62}
+.sec ul{margin:0 0 15px;padding-left:18px;color:var(--ink-muted);font-size:15px}
+.sec li{margin:0 0 7px}
+
+/* ── ugu's notes ──────────────────────────────────────────────────────── */
+[data-note]{position:relative;transition:background .25s ease,box-shadow .25s ease}
+html[data-notes="on"] [data-note]{
+  background:var(--tok-bg);box-shadow:0 0 0 1px var(--tok) inset;border-radius:5px}
+html[data-notes="on"] [data-note]::after{
+  content:attr(data-n);position:absolute;top:-9px;right:-9px;width:19px;height:19px;
+  border-radius:50%;background:var(--tok);color:var(--sky-1);
+  font-family:var(--mono);font-size:10px;display:grid;place-items:center;
+  box-shadow:0 2px 8px rgba(20,10,60,.3)}
+[data-note].live{background:var(--tok-bg);box-shadow:0 0 0 2px var(--tok) inset}
+.note{position:absolute;z-index:60;width:min(268px,70vw);
+  background:var(--sky-1);border:1px solid var(--line);border-radius:12px;
+  padding:11px 13px 12px;box-shadow:0 16px 40px rgba(16,18,24,.17);
+  opacity:0;visibility:hidden;transform:translateY(6px);
+  transition:opacity .22s ease,transform .26s cubic-bezier(.2,.9,.25,1),visibility .22s}
+.note.on{opacity:1;visibility:visible;transform:none}
+.note-h{display:flex;align-items:center;gap:7px;margin:0 0 6px;
+  font-family:var(--mono);font-size:10px;color:var(--ink-70)}
+.note-h b{color:var(--ink);font-weight:500}
+.note-h .av{width:19px;height:19px;flex:none}
+.note-h .ugu{display:block;width:100%;height:100%;overflow:visible}
+.note p{margin:0;font-size:13px;line-height:1.5;color:var(--ink)}
+
+.player{position:fixed;left:50%;bottom:58px;z-index:85;
+  transform:translateX(-50%) translateY(14px);
+  display:flex;align-items:center;gap:11px;padding:9px 10px 9px 13px;
+  border:1px solid var(--line);border-radius:99px;background:var(--sky-1);
+  box-shadow:0 14px 40px rgba(16,18,24,.18);opacity:0;visibility:hidden;
+  transition:opacity .28s ease,transform .32s cubic-bezier(.2,.9,.25,1),visibility .28s}
+.player.on{opacity:1;visibility:visible;transform:translateX(-50%)}
+.player .n{font-family:var(--mono);font-size:11px;color:var(--ink-70);
+  font-variant-numeric:tabular-nums}
+.player button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);
+  background:transparent;color:var(--ink);cursor:pointer;font-family:var(--mono);
+  font-size:12px;display:grid;place-items:center;transition:.16s}
+.player button:hover:not(:disabled){background:var(--tok-bg);border-color:var(--tok)}
+.player button:disabled{opacity:.3;cursor:not-allowed}
+.player .x{width:auto;padding:0 13px;border-radius:99px;font-size:10.5px;letter-spacing:.05em}
+
+@media(max-width:900px){
+  .cs{grid-template-columns:1fr}
+  .col{border-right:0;order:2;padding-bottom:40px}
+  .stage{position:static;height:58vh;order:1;border-bottom:1px solid var(--line)}
+  .sec:last-of-type{padding-bottom:30px}
+  .note{position:static !important;width:auto;margin:10px 0 0;
+    opacity:1;visibility:visible;transform:none;box-shadow:none}
+  /* Panels cross-fade on a wide stage, which reads well there. In a short
+     one-column stage the outgoing panel is still on screen while the next
+     arrives, so the two print on top of each other. Below the split the
+     swap is immediate and only one panel exists in the box at a time. */
+  .art{transition:none}
+  .art:not(.on){display:none}
+}
+@media(max-width:560px){
+  /* The caption is a long sentence and a short label sharing one row.
+     At phone width they met in the middle, so the sentence truncates. */
+  .cap{gap:10px;font-size:9.5px;align-items:baseline}
+  .cap #capT{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cap #capN{flex:none;white-space:nowrap}
+}
+
+/* ── full size ────────────────────────────────────────────────────────── */
+.lb{position:fixed;inset:0;z-index:300;background:rgba(10,9,16,.9);display:none;
+  align-items:center;justify-content:center;padding:clamp(14px,3vw,46px)}
+.lb.on{display:flex}
+.lb img{max-width:100%;max-height:92vh;width:auto;border-radius:10px}
+.lb-x{position:absolute;top:14px;right:16px;width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);color:#fff;
+  font-size:18px;cursor:pointer;display:grid;place-items:center}
+.lb-x:hover{background:rgba(0,0,0,.72)}
+
+/* ── next project ─────────────────────────────────────────────────────── */
+.nextp{border-top:1px solid var(--line);margin-top:clamp(40px,7vh,80px);
+  padding:clamp(26px,4vh,44px) 0 clamp(50px,8vh,90px)}
+.nextp small{font-family:var(--mono);font-size:10.5px;color:var(--ink-70);display:block}
+.nextp a{display:inline-flex;align-items:baseline;gap:12px;margin-top:10px;
+  text-decoration:none;color:var(--ink)}
+.nextp b{font-family:var(--display);font-weight:800;
+  font-size:clamp(20px,2.4vw,30px);letter-spacing:-.028em;line-height:1.15;
+  transition:color .18s}
+.nextp a:hover b{color:var(--tok)}
+.nextp .arw{font-family:var(--mono);font-size:15px;color:var(--tok);
+  transition:transform .26s cubic-bezier(.2,.9,.25,1)}
+.nextp a:hover .arw{transform:translateX(5px)}
+
+.wipe{position:fixed;inset:0;z-index:400;pointer-events:none;
+  background:linear-gradient(to bottom,var(--sky-mid),var(--sky-2));
+  transform:translateY(101%);display:grid;place-items:center}
+.wipe.on{pointer-events:auto;
+  animation:wipeUp .62s cubic-bezier(.65,0,.35,1) forwards}
+@keyframes wipeUp{to{transform:translateY(0)}}
+.wipe-t{font-family:var(--display);font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(22px,3.4vw,44px);color:var(--ink);max-width:16ch;text-align:center;
+  opacity:0}
+.wipe.on .wipe-t{animation:wipeIn .5s .18s ease forwards}
+@keyframes wipeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.wipe{display:none}}
+@media(prefers-reduced-motion:reduce){.art,.note,.player{transition:none}}
+
+
+.jp{--v:#6a45e0;--t:#0a7a63;--n:#1e1b3a;--ink:#1e1b3a;--dim:#5c5a76;
+  --ln:#e2e1ec;--paper:#f5f6fa;--card:#fff;
+  display:flex;flex-direction:column;gap:11px;padding:13px;
+  background:var(--paper);border:1px solid var(--ln);border-radius:14px;
+  font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--ink);
+  container-type:inline-size}
+.jp *{box-sizing:border-box}
+
+/* Inside a case study the panel sits on a .art, which is an absolutely
+   positioned grid with place-items:center — so a flex column collapses to
+   min-content. Fill the panel and let the stage take the leftover height
+   instead of holding a fixed ratio it has no room for. */
+.art > .jp{justify-self:stretch;align-self:stretch;width:100%;height:100%}
+.art > .jp .jstage{flex:1 1 auto;min-height:0;aspect-ratio:auto}
+
+/* the four doors in */
+.jtabs{display:flex;gap:6px;flex-wrap:wrap}
+.jtab{display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+  padding:4px 13px 4px 4px;border:1px solid var(--ln);border-radius:99px;
+  background:var(--card);color:var(--dim);font:600 12.5px/1 inherit;
+  transition:color .2s,border-color .2s,background .2s}
+.jtab .jav{width:25px;height:25px;border-radius:50%;background:var(--tint);
+  display:block;flex:none}
+.jtab:hover{color:var(--ink)}
+.jtab[aria-selected="true"]{color:var(--ink);border-color:var(--c);
+  box-shadow:inset 0 0 0 1px var(--c)}
+.jp :focus-visible{outline:2.5px solid var(--c,#6a45e0);outline-offset:2px}
+
+/* the stage */
+.jstage{position:relative;overflow:hidden;background:var(--card);
+  border:1px solid var(--ln);border-radius:12px;aspect-ratio:772/614}
+.jview{position:absolute;inset:0}
+.jview[hidden]{display:none}
+.jsvg{display:block;width:100%;height:100%}
+
+/* the track of four cards, panning one card at a time */
+.jtrack{transition:transform .66s cubic-bezier(.22,.9,.26,1)}
+.jset{--pitch:374px}
+.jset.nopan .jtrack,.jset.nopan .jcard,.jset.nopan .jfoot,.jset.nopan text{transition:none}
+/* two cards in view, the next one ghosted: the step shares a pan with the
+   one before it so the reader always sees where the story is going */
+.jp:not([data-one]) .jset[data-step="2"] .jtrack{transform:translateX(calc(-1 * var(--pitch)))}
+.jp:not([data-one]) .jset[data-step="3"] .jtrack,
+.jp:not([data-one]) .jset[data-step="4"] .jtrack{transform:translateX(calc(-2 * var(--pitch)))}
+/* one card at a time: every step pans */
+.jp[data-one] .jset[data-step="2"] .jtrack{transform:translateX(calc(-1 * var(--pitch)))}
+.jp[data-one] .jset[data-step="3"] .jtrack{transform:translateX(calc(-2 * var(--pitch)))}
+.jp[data-one] .jset[data-step="4"] .jtrack{transform:translateX(calc(-3 * var(--pitch)))}
+.jcard{opacity:.26;transition:opacity .55s ease}
+.jcard text{opacity:0;transition:opacity .4s ease}
+.jcard .jfoot{opacity:0;transition:opacity .4s ease}
+.jset[data-step="1"] .jcard[data-i="1"] text,.jset[data-step="2"] .jcard[data-i="2"] text,.jset[data-step="3"] .jcard[data-i="3"] text,.jset[data-step="4"] .jcard[data-i="4"] text{opacity:1}
+.jset[data-step="1"] .jcard[data-i="1"] .jfoot,.jset[data-step="2"] .jcard[data-i="2"] .jfoot,.jset[data-step="3"] .jcard[data-i="3"] .jfoot,.jset[data-step="4"] .jcard[data-i="4"] .jfoot{opacity:1}
+.jset[data-step="1"] .jcard[data-i="1"],.jset[data-step="2"] .jcard[data-i="2"],
+.jset[data-step="3"] .jcard[data-i="3"],.jset[data-step="4"] .jcard[data-i="4"]{opacity:1}
+
+/* one card at a time once the panel is narrow */
+.jp[data-narrow="1"] .jstage{aspect-ratio:398/614}
+.jp[data-narrow="1"] .jset[data-step="2"] .jtrack{transform:translateX(calc(-1 * var(--pitch)))}
+.jp[data-narrow="1"] .jset[data-step="3"] .jtrack{transform:translateX(calc(-2 * var(--pitch)))}
+.jp[data-narrow="1"] .jset[data-step="4"] .jtrack{transform:translateX(calc(-3 * var(--pitch)))}
+
+/* one persona at a time once the panel is narrow, same as the journeys */
+.jp[data-narrow="1"] .jgrid{grid-template-columns:1fr}
+.jp[data-narrow="1"] .jpc{display:none;opacity:1;box-shadow:none}
+.jp[data-narrow="1"] .jset[data-step="1"] .jpc[data-i="1"],
+.jp[data-narrow="1"] .jset[data-step="2"] .jpc[data-i="2"],
+.jp[data-narrow="1"] .jset[data-step="3"] .jpc[data-i="3"]{display:flex}
+
+/* ── the three groups, as records ─────────────────────────────────────────
+   Identity is carried by one colored edge rather than a picture of a
+   person: at this size a drawn figure is a blob, and this product's own
+   language is records and badges. The need is the loud line, the pain sits
+   quieter under it, and the places each group works are the same chips the
+   product uses for certifications. */
+.jgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;height:100%;padding:12px}
+/* All three stay fully legible. Fading the inactive cards to .38 put
+   their body copy near 1.6:1 and read as a rendering fault; the active
+   one is marked by color, elevation and a lift instead. */
+.jpc{position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid var(--ln);border-radius:10px;background:var(--card);
+  transition:box-shadow .45s ease,transform .45s cubic-bezier(.22,.9,.26,1),
+             border-color .45s ease}
+.jedge{position:absolute;top:0;left:0;right:0;height:3px;margin:0;
+  background:var(--ln);transition:height .45s cubic-bezier(.22,.9,.26,1),
+             background .45s ease}
+.jpc h4{color:var(--ink)}
+.jpc .javw{filter:saturate(.25);transition:filter .45s ease}
+.jset[data-step="1"] .jpc[data-i="1"],.jset[data-step="2"] .jpc[data-i="2"],
+.jset[data-step="3"] .jpc[data-i="3"]{transform:translateY(-3px);
+  border-color:color-mix(in srgb,var(--c) 35%,var(--ln));
+  box-shadow:0 12px 28px rgba(30,27,58,.13)}
+.jset[data-step="1"] .jpc[data-i="1"] .jedge,
+.jset[data-step="2"] .jpc[data-i="2"] .jedge,
+.jset[data-step="3"] .jpc[data-i="3"] .jedge{height:6px;background:var(--c)}
+.jset[data-step="1"] .jpc[data-i="1"] h4,
+.jset[data-step="2"] .jpc[data-i="2"] h4,
+.jset[data-step="3"] .jpc[data-i="3"] h4{color:var(--c)}
+.jset[data-step="1"] .jpc[data-i="1"] .javw,
+.jset[data-step="2"] .jpc[data-i="2"] .javw,
+.jset[data-step="3"] .jpc[data-i="3"] .javw{filter:none}
+
+.jpc-body{padding:15px 14px 14px;display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+.jhead{display:flex;align-items:center;gap:9px}
+.javw{width:34px;height:34px;flex:none;border-radius:50%;overflow:hidden;
+  background:var(--tint);display:block}
+.javw .jav{width:100%;height:100%;display:block}
+.jpc h4{margin:0;font:800 16px/1.15 "Plus Jakarta Sans","Inter",sans-serif;
+  letter-spacing:-.01em}
+.jwho{margin:7px 0 0;font:400 11px/1.4 inherit;color:var(--dim);max-width:30ch}
+.jlbl{margin:13px 0 3px;font:500 9.5px/1 inherit;color:var(--dim)}
+/* the chips anchor to the foot, so the card has a head and a base
+   instead of trailing off into empty space */
+.jlbl-end{margin-top:auto;padding-top:13px;border-top:1px solid var(--ln);
+  margin-bottom:4px}
+.jneed{margin:0;font:600 13.5px/1.32 inherit;color:var(--ink);max-width:28ch}
+.jpain{margin:0;font:400 11.5px/1.38 inherit;color:var(--dim);max-width:30ch}
+.jchips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}
+.jchips li{padding:3px 8px;border-radius:5px;background:var(--tint);
+  font:600 9.5px/1.25 inherit;color:var(--c)}
+
+/* the rail: a readout, and the controls that make the motion optional */
+.jrail{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.jsteps{display:flex;gap:5px}
+.jstep{width:27px;height:27px;padding:0;cursor:pointer;border-radius:8px;
+  border:1px solid var(--ln);background:var(--card);color:var(--dim);
+  font:600 11.5px/1 inherit;transition:background .2s,color .2s,border-color .2s}
+.jstep:hover{color:var(--ink);border-color:var(--c)}
+.jstep[aria-current="true"]{background:var(--c);border-color:var(--c);color:#fff}
+.jlab{margin:0;flex:1 1 150px;min-width:0;font:500 12px/1.35 inherit;color:var(--dim)}
+.jpause{display:inline-flex;align-items:center;gap:6px;cursor:pointer;flex:none;
+  padding:6px 11px;border:1px solid var(--ln);border-radius:8px;
+  background:var(--card);color:var(--dim);font:600 11.5px/1 inherit}
+.jpause:hover{color:var(--ink)}
+.jbars{width:9px;height:10px;flex:none;background:currentColor;
+  clip-path:polygon(0 0,3.5px 0,3.5px 10px,0 10px,0 0,5.5px 0,9px 0,9px 10px,5.5px 10px)}
+.jpause[aria-pressed="true"] .jbars{clip-path:polygon(0 0,9px 5px,0 10px)}
+
+/* what moves. Every one animates FROM a keyframe with fill both, so with
+   animation disabled the artwork still renders whole. */
+.a-rise,.a-pop,.a-grow,.a-press,.a-ring,.a-drop,.a-bob,.a-track{
+  transform-box:fill-box;transform-origin:50% 50%}
+.a-grow{transform-origin:0% 50%}
+.d1{--dly:.08s}.d2{--dly:.26s}.d3{--dly:.44s}.d4{--dly:.62s}.d5{--dly:.8s}
+@keyframes jrise{from{opacity:0;transform:translateY(9px)}}
+@keyframes jpop {from{opacity:0;transform:scale(.55)}}
+@keyframes jgrow{from{transform:scaleX(.02)}}
+@keyframes jpress{45%{transform:scale(.94)}}
+@keyframes jring{from{opacity:.3;transform:scale(.97)}}
+@keyframes jdrop{from{opacity:0;transform:translateY(-13px)}}
+@keyframes jbob {from{opacity:0;transform:translateY(-7px)}60%{opacity:1;transform:translateY(3px)}}
+@keyframes jtrav{from{transform:translate(-34px,-26px)}}
+
+.jset[data-step="1"] .jcard[data-i="1"] .a-rise,.jset[data-step="2"] .jcard[data-i="2"] .a-rise,.jset[data-step="3"] .jcard[data-i="3"] .a-rise,.jset[data-step="4"] .jcard[data-i="4"] .a-rise{animation:jrise .55s var(--dly,0s) both}
+.jset[data-step="1"] .jcard[data-i="1"] .a-pop,.jset[data-step="2"] .jcard[data-i="2"] .a-pop,.jset[data-step="3"] .jcard[data-i="3"] .a-pop,.jset[data-step="4"] .jcard[data-i="4"] .a-pop{animation:jpop .5s var(--dly,0s) both}
+.jset[data-step="1"] .jcard[data-i="1"] .a-grow,.jset[data-step="2"] .jcard[data-i="2"] .a-grow,.jset[data-step="3"] .jcard[data-i="3"] .a-grow,.jset[data-step="4"] .jcard[data-i="4"] .a-grow{animation:jgrow .6s var(--dly,0s) both}
+.jset[data-step="1"] .jcard[data-i="1"] .a-press,.jset[data-step="2"] .jcard[data-i="2"] .a-press,.jset[data-step="3"] .jcard[data-i="3"] .a-press,.jset[data-step="4"] .jcard[data-i="4"] .a-press{animation:jpress .45s var(--dly,0s) both}
+.jset[data-step="1"] .jcard[data-i="1"] .a-ring,.jset[data-step="2"] .jcard[data-i="2"] .a-ring,.jset[data-step="3"] .jcard[data-i="3"] .a-ring,.jset[data-step="4"] .jcard[data-i="4"] .a-ring{animation:jring .5s var(--dly,0s) both}
+.jset[data-step="1"] .jcard[data-i="1"] .a-drop,.jset[data-step="2"] .jcard[data-i="2"] .a-drop,.jset[data-step="3"] .jcard[data-i="3"] .a-drop,.jset[data-step="4"] .jcard[data-i="4"] .a-drop{animation:jdrop .5s var(--dly,0s) both}
+.jset[data-step="1"] .jcard[data-i="1"] .a-bob,.jset[data-step="2"] .jcard[data-i="2"] .a-bob,.jset[data-step="3"] .jcard[data-i="3"] .a-bob,.jset[data-step="4"] .jcard[data-i="4"] .a-bob{animation:jbob .6s var(--dly,0s) both}
+.jset[data-step="1"] .jcard[data-i="1"] .a-track,.jset[data-step="2"] .jcard[data-i="2"] .a-track,.jset[data-step="3"] .jcard[data-i="3"] .a-track,.jset[data-step="4"] .jcard[data-i="4"] .a-track{animation:jtrav .6s var(--dly,0s) both}
+@media(prefers-reduced-motion:reduce){.jp *{animation:none!important;transition:none!important}}
+
+/* ── blocks that live in the prose column ─────────────────────────────────
+   The column is about 460px of reading width, narrower than any desktop
+   breakpoint, so the table always takes its stacked card form rather than
+   trying to be four columns in half a screen. */
+.col .tw{border:0;border-radius:0;margin:22px 0 0}
+.col table,.col tbody,.col tbody tr,.col tbody td{display:block;width:100%}
+.col thead{display:none}
+.col tbody tr{border:1px solid var(--line);border-radius:12px;margin:0 0 12px;padding:4px 0}
+.col tbody td{border-bottom:0;padding:9px 14px;font-size:14px}
+.col tbody td::before{content:attr(data-l);display:block;font-family:var(--mono);
+  font-size:10.5px;color:var(--ink-70);margin:0 0 5px}
+.col .stats{grid-template-columns:1fr;gap:18px}
+.col .specs,.col .meta{grid-template-columns:1fr}
+.col .pour div{grid-template-columns:96px 34px minmax(0,1fr)}
+.col .bar-key{gap:20px}
+.col .ms li{grid-template-columns:1fr}
+.col .ms .now{text-align:left}
+.col .pins li{grid-template-columns:44px 1fr}
+.col .dl,.col .pins,.col .arts,.col .ms{max-width:none}
+.col .sec{max-width:none}
+.col .sec p,.col .sec li{max-width:46ch}
+
+/* the evidence block closes the reading rather than opening a new stage */
+.sec.ev{border-top:1px solid var(--line);margin-top:clamp(34px,6vh,70px);
+  padding-top:clamp(26px,4vh,46px)}
+.sec.ev blockquote{margin:0 0 22px}
+
+/* One screen per panel. Stacking two or three frames turned the stage into
+   a contact sheet, and a second frame scrolled to the tail of a long page
+   reads as empty. One artefact, shown large enough to actually look at. */
+.art > .dev ~ .dev{display:none}
+.art.stack,.art.trio{grid-auto-flow:row;place-content:center;gap:0}
+.art .dev.laptop{width:min(100%,780px)}
+.art.trio .dev.phone,.art .dev.phone{width:clamp(160px,24vw,320px)}
+
+
+.ui.rec{--v:#752f8a;--ink:#1A1D29;--dim:#565B6E;--ln:#E3E2EC;--soft:#F3EDF5;--bg:#fff;
+  display:flex;flex-direction:column;gap:12px;padding:16px 18px;overflow:auto;
+  background:var(--bg);border:1px solid var(--ln);border-radius:14px;
+  width:100%;height:100%;container-type:inline-size;
+  font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--ink)}
+.art > .ui.rec{justify-self:stretch;align-self:stretch}
+.ui.rec *{box-sizing:border-box}
+.ui.rec .ui-h{margin:0;font:800 14px/1.2 "Plus Jakarta Sans",Inter,sans-serif}
+.ui.rec .ui-n{margin:auto 0 0;font:500 10.5px/1.45 inherit;color:var(--dim)}
+.rec .tabs{list-style:none;margin:0;padding:0 0 7px;display:flex;gap:5px;flex-wrap:wrap;
+  border-bottom:1px solid var(--ln)}
+.rec .tabs li{padding:4px 10px;border-radius:7px 7px 0 0;font:600 10px/1 inherit;
+  color:var(--dim);background:var(--soft);border:1px solid var(--ln);border-bottom:0;
+  opacity:.45;transition:opacity .4s,color .3s,background .3s;flex:none}
+.rec[data-step="1"] .tabs li,.rec[data-step="2"] .tabs li,
+.rec[data-step="3"] .tabs li{opacity:1}
+.rec[data-step="1"] .tabs .t1,.rec[data-step="2"] .tabs .t1,.rec[data-step="3"] .tabs .t1{
+  background:var(--v);border-color:var(--v);color:#fff}
+.rec .cols{list-style:none;margin:0;padding:0;display:flex;gap:6px;flex-wrap:wrap}
+.rec .cols li{position:relative;display:inline-flex;align-items:center;gap:5px;
+  padding:5px 9px;border:1px solid var(--ln);border-radius:6px;background:var(--soft);
+  font:600 9.5px/1 inherit;color:var(--ink);flex:none;
+  opacity:0;transform:scale(.93)}
+.rec .cols li i{width:0;height:0;border-left:3.5px solid transparent;
+  border-right:3.5px solid transparent;border-bottom:5px solid var(--dim)}
+.rec[data-step="2"] .cols li,.rec[data-step="3"] .cols li{opacity:1;transform:none;
+  transition:opacity .45s var(--dly,0s),transform .45s var(--dly,0s)}
+.rec .proof{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;
+  flex:1 1 auto;min-height:0;justify-content:center}
+.rec .proof li{padding:5px 10px;border-left:2.5px solid var(--v);background:var(--soft);
+  border-radius:0 6px 6px 0;font:500 10.5px/1.3 inherit;flex:none;
+  opacity:0;transform:scale(.97)}
+.rec[data-step="3"] .proof li{opacity:1;transform:none;
+  transition:opacity .45s var(--dly,0s),transform .45s var(--dly,0s)}
+.rec .d1{--dly:.05s}.rec .d2{--dly:.13s}.rec .d3{--dly:.21s}.rec .d4{--dly:.29s}
+.rec .d5{--dly:.37s}.rec .d6{--dly:.45s}.rec .d7{--dly:.53s}.rec .d8{--dly:.61s}
+@container (max-width:560px){
+  .ui.rec{padding:11px 12px;gap:8px}
+  /* let the lists take their natural height and the panel scroll, rather
+     than squeezing them into a short stage and cutting the ends off */
+  .rec .proof{flex:0 0 auto;justify-content:flex-start}
+  .rec .tabs li{font-size:8.5px;padding:3px 7px}
+  .rec .cols li{font-size:8.5px;padding:4px 7px}
+  .rec .proof li{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .ui.rec *{transition:none!important;animation:none!important}
+  .rec .cols li,.rec .proof li{opacity:1;transform:none}}
+
+/* the microinteraction player: one state in view, no ghosted peek */
+.jp.rise .jstage{aspect-ratio:auto}
+.jp.rise .jcard{opacity:1}
+.jp.rise .jcard text{opacity:1}
+
+</style>
+<link rel="stylesheet" href="assets/case-system.css"/>
+</head>
+<body class="case-story-aligned">
+<p class="sr-only" id="announce" role="status" aria-live="polite"></p>
+<div class="grid-lines" aria-hidden="true"></div>
+<div class="tod" id="tod" role="group" aria-label="Change the theme"></div>
+
+<a class="mark" href="index.html" aria-label="Grace Gwe, home"><svg class="logo" width="32" height="32" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"><path class="lg-h2" d="M4 32 H12"/><path class="lg-arc" d="M46.3 24.4 A18 18 0 1 0 46.3 39.6"/><path class="lg-h1" d="M31 32 H54"/></g></svg><span class="mark-t">grace gwe</span></a>
+
+<header class="topbar">
+  <nav class="crumb" aria-label="Breadcrumb">
+    <a href="index.html#work">case studies</a>
+    <span><b>IdahoSTARS RISE</b></span>
+  </nav>
+  <button class="switch" id="sw" type="button" aria-pressed="false">
+    <i aria-hidden="true"></i> walk me through
+  </button>
+</header>
+
+<main class="cs">
+  <div class="col">
+    <h1 class="t">IdahoSTARS RISE</h1>
+    <p class="claim">Eight kinds of proof, one record an educator can actually read.</p>
+    <dl class="meta"><dt>role</dt><dd>UI/UX Designer</dd><dt>built by</dt><dd>In Time Tec</dd><dt>client</dt><dd>IdahoSTARS</dd><dt>scope</dt><dd>Web app redesign &mdash; desktop, tablet and phone</dd></dl><ol class="star-sum" aria-label="The case study in STAR form"><li><b aria-hidden="true">S</b><div><span>Situation</span><p>Professional development was represented by many record types, making a person’s history hard to read at a glance.</p></div></li><li><b aria-hidden="true">T</b><div><span>Task</span><p>Redesign the Professional Development Record for desktop, tablet, and phone.</p></div></li><li><b aria-hidden="true">A</b><div><span>Action</span><p>Unify the record-tab pattern, overlays, and seven microinteraction behaviors across screen sizes.</p></div></li><li><b aria-hidden="true">R</b><div><span>Result &amp; learning</span><p>Design deliverables were prepared; no verified adoption or task-performance metrics are available.</p></div></li></ol>
+    <div class="part" aria-label="Situation"><b aria-hidden="true">S</b><span>Situation</span></div><section class="sec" id="tension" data-fig="record"><p class="eyebrow">01 &middot; the tension</p><h2>One record, eight kinds of proof</h2><p><span data-note="Eight different kinds of evidence about one educator. The design question is how many ways you can afford to make someone learn to read.">The Professional Development Record is the official IdahoSTARS account of every training, credential, course and coaching session an early childhood educator completes. Growth shows up in very different forms: approved training hours, first aid and CPR certifications, diplomas and college credit, scholarships and payments, technical assistance hours, coaching sessions, and group cohorts.</span></p><p>Eight kinds of proof, one record. The problem is not storing them &mdash; it is making them readable as one person's history.</p></section><div class="part" aria-label="Task &amp; action"><b aria-hidden="true">T</b><span>Task &amp; action</span></div><section class="sec" id="table" data-fig="record"><p class="eyebrow">02 &middot; the table</p><h2>Once you can read one, you can read them all</h2><p><span data-note="Nine tabs, one table. The restraint is the design.">Each record type gets its own tab, and every tab uses the same searchable, paginated table. Training lists course ID, name, date, domain and CDA subject area; every column sorts, and the Type filter narrows the table to one kind of training.</span></p><p>Holding the pattern steady across nine tabs is the whole move. A new record type costs the user nothing to learn, because it behaves exactly like the last one.</p></section><div class="part" aria-label="Action &amp; details"><b aria-hidden="true">A</b><span>Action &amp; details</span></div><section class="sec" id="overlays" data-fig="micro"><p class="eyebrow">03 &middot; the overlays</p><h2>Designing the moments in between</h2><p><span data-note="The permission checkbox appearing only for video is the kind of detail that never survives a handoff unless someone writes it down. Grace wrote it down.">The work that decides whether a redesign survives contact with a build is not the screens &mdash; it is the overlays. Building a report: pick a date range, the record types to include and a facility, then view it on screen or download it. Reading it: each selected type becomes its own section with a running total, such as IdahoSTARS-approved hours or credit hours.</span></p><p>A coaching session opens to its notes and action plan &mdash; the goal, the steps to reach it with dates, and what the coach will do. Adding evidence is one upload flow for both documents and video: the upload button relabels itself to match the file type, and a permission checkbox appears only for video.</p><p>Each one was handed off annotated with the action, the result and the edge cases, so developers built behavior and not just pixels.</p></section><section class="sec" id="micro" data-fig="micro"><p class="eyebrow">04 &middot; microinteractions</p><h2>The small responses that say it worked</h2><p><span data-note="Each of these is playing the same frames Grace handed to the developers, one state at a time rather than side by side.">Seven interactions, drawn state by state as they were given to developers. Sorting runs ascending then descending on any column. The Type filter narrows a table to one kind of record. Only the report types you tick appear in the report. Choosing Video relabels the upload button and adds the permission check &mdash; and if you skip it, the error says exactly how to fix it. Deleting a document always asks first.</span></p><p>They are small, and they are the difference between a table a person trusts and one they double-check somewhere else.</p></section><section class="sec" id="responsive" data-fig="record"><p class="eyebrow">05 &middot; smaller</p><h2>Down to tablet and phone</h2><p>The record and its descriptions were designed for tablet and phone widths as well as desktop. A record an educator can only reach at a desk is a record that gets updated late, or not at all.</p></section><div class="part" aria-label="Result &amp; reflection"><b aria-hidden="true">R</b><span>Result &amp; reflection</span></div><section class="sec" id="next" data-fig="micro"><p class="eyebrow">06 &middot; what next</p><h2>What I cannot claim</h2><p><span data-note="The honest version of a results section, when the results belong to the client.">No adoption numbers, no task times, no error rates. The redesign was delivered as screens, overlays and interaction annotations, and the outcome data is not mine to publish.</span></p><p>What I would measure: how often an educator opens a record and leaves without finding what they came for, how many uploads fail the permission step on first try, and whether the report gets built on screen or downloaded &mdash; because that last one says whether the on-screen report is worth keeping.</p></section>
+
+    <section class="sec ev" id="evidence" data-fig="record">
+      <p class="eyebrow">&bull; &middot; evidence</p>
+      <h2>Evidence</h2>
+      <div class="stats"><div><b>9</b><span>record tabs</span><p>Descriptions, Training, Certifications, Academic Education, Recognition, TTA, Coaching, Cohort and Packages, all on one table pattern.</p></div><div><b>7</b><span>microinteractions annotated</span><p>Each handed to developers with the action, the result and the edge cases, so they built behavior rather than pixels.</p></div><div><b>3</b><span>widths</span><p>The record and its descriptions were designed down to tablet and phone.</p></div></div>
+      <ul class="arts">
+        <li>The record redesigned across nine tabs on one table pattern, at desktop,
+            tablet and phone.</li>
+        <li>Report building and reading, coaching sessions, and a single upload flow for
+            documents and video.</li>
+        <li>Seven microinteractions drawn state by state and annotated with action,
+            result and edge cases.</li>
+      </ul>
+    </section>
+
+    <nav class="nextp" aria-label="Next case study">
+      <small>next case study</small>
+      <a href="case-idaho-cte.html" data-move="Idaho CTE">
+        <b>Idaho CTE</b><span class="arw" aria-hidden="true">&rarr;</span></a>
+    </nav>
+  </div>
+
+  <aside class="stage">
+    <div class="plate"><div class="art" data-fig="record" data-n="9 tabs" data-cap="One Professional Development Record, nine record types"><div class="ui rec" data-steps="3"><p class="ui-h">One record, nine tabs</p><ul class="tabs"><li class="t0">Descriptions</li><li class="t1">Training</li><li class="t2">Certifications</li><li class="t3">Academic Education</li><li class="t4">Recognition</li><li class="t5">TTA</li><li class="t6">Coaching</li><li class="t7">Cohort</li><li class="t8">Packages</li></ul><ul class="cols"><li class="d1">Course ID<i></i></li><li class="d2">Name<i></i></li><li class="d3">Date<i></i></li><li class="d4">Domain<i></i></li><li class="d5">CDA subject area<i></i></li></ul><ul class="proof"><li class="d1">Approved training hours</li><li class="d2">First aid and CPR certifications</li><li class="d3">Diplomas and college credit</li><li class="d4">Scholarships and payments</li><li class="d5">Technical assistance hours</li><li class="d6">Coaching sessions</li><li class="d7">Group cohorts</li></ul><p class="ui-n">Every tab uses the same searchable, paginated table, so once you can read one you can read them all.</p></div></div><div class="art" data-fig="micro" data-n="live" data-cap="Seven microinteractions, as handed to developers"><div class="jp rise" data-one="1" data-labels='{"sort": ["Click any column header", "Sorted ascending", "Click again: descending"], "filter": ["Open the Type filter", "Choose one type", "Table shows only that type"], "report": ["Tick report types", "View Report"], "upload": ["Document selected", "Switch to Video"], "error": ["Submit without the checkbox", "Error explains the fix"], "delete": ["Click the trash icon", "Confirm or cancel"], "coaching": ["One row, three ways in"]}'><div class="jtabs" role="tablist" aria-label="Microinteraction"><button class="jtab" role="tab" aria-selected="true" data-go="sort" style="--c:#752f8a;--tint:#f3edf5">Sorting</button><button class="jtab" role="tab" aria-selected="false" data-go="filter" style="--c:#752f8a;--tint:#f3edf5">Type filter</button><button class="jtab" role="tab" aria-selected="false" data-go="report" style="--c:#752f8a;--tint:#f3edf5">Report types</button><button class="jtab" role="tab" aria-selected="false" data-go="upload" style="--c:#752f8a;--tint:#f3edf5">Upload type</button><button class="jtab" role="tab" aria-selected="false" data-go="error" style="--c:#752f8a;--tint:#f3edf5">Permission</button><button class="jtab" role="tab" aria-selected="false" data-go="delete" style="--c:#752f8a;--tint:#f3edf5">Delete</button><button class="jtab" role="tab" aria-selected="false" data-go="coaching" style="--c:#752f8a;--tint:#f3edf5">Row actions</button></div><div class="jstage"><div class="jview jset" data-view="sort" data-steps="3" data-step="1" style="--c:#752f8a;--pitch:318.7px"><ol class="sr-only"><li>Click any column header</li><li>Sorted ascending</li><li>Click again: descending</li></ol><svg class="jsvg" viewBox="0 14 318.7 342.0" data-vb-wide="0 14 318.7 342.0" data-vb-narrow="0 14 318.7 342.0" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><g class="jtrack"><g class="jcard" data-i="1"><circle cx="35.0" cy="34" r="11" fill="#752f8a"/><text x="35.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">1</text><text x="54.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Click any column header</text>
+<rect x="24.0" y="58" width="274.6666666666667" height="288" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(24.0,58)"><rect x="16" y="24" width="242.66666666666669" height="40" rx="6" fill="#f3edf5"/><text x="32" y="49" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Training Date</text><path d="M151.2 44 l4 -5 l4 5z" fill="#94a3b8"/><path d="M151.2 48 l4 5 l4 -5z" fill="#94a3b8"/><line x1="16" x2="258.6666666666667" y1="100" y2="100" stroke="#d5dce5"/><text x="32" y="87" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">06/03/2022</text><line x1="16" x2="258.6666666666667" y1="136" y2="136" stroke="#d5dce5"/><text x="32" y="123" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">10/01/2021</text><line x1="16" x2="258.6666666666667" y1="172" y2="172" stroke="#d5dce5"/><text x="32" y="159" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">08/06/2022</text><line x1="16" x2="258.6666666666667" y1="208" y2="208" stroke="#d5dce5"/><text x="32" y="195" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">02/15/2022</text><line x1="16" x2="258.6666666666667" y1="244" y2="244" stroke="#d5dce5"/><text x="32" y="231" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">12/27/2021</text><path d="M115.36 40 l0 18 l5 -4 l3.5 7 l3 -1.5 l-3.5 -7 l6.5 0 z" fill="#0f172a" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></g>
+
+</g><g class="jcard" data-i="2"><circle cx="353.6666666666667" cy="34" r="11" fill="#752f8a"/><text x="353.6666666666667" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">2</text><text x="372.6666666666667" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Sorted ascending</text>
+<rect x="342.6666666666667" y="58" width="274.6666666666667" height="288" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(342.6666666666667,58)"><rect x="16" y="24" width="242.66666666666669" height="40" rx="6" fill="#f3edf5"/><text x="32" y="49" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Training Date</text><path d="M151.2 44 l4 -5 l4 5z" fill="#752f8a"/><path d="M151.2 48 l4 5 l4 -5z" fill="#94a3b8"/><line x1="16" x2="258.6666666666667" y1="100" y2="100" stroke="#d5dce5"/><text x="32" y="87" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">10/01/2021</text><line x1="16" x2="258.6666666666667" y1="136" y2="136" stroke="#d5dce5"/><text x="32" y="123" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">12/27/2021</text><line x1="16" x2="258.6666666666667" y1="172" y2="172" stroke="#d5dce5"/><text x="32" y="159" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">02/15/2022</text><line x1="16" x2="258.6666666666667" y1="208" y2="208" stroke="#d5dce5"/><text x="32" y="195" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">06/03/2022</text><line x1="16" x2="258.6666666666667" y1="244" y2="244" stroke="#d5dce5"/><text x="32" y="231" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">08/06/2022</text><text x="137.33333333333334" y="268" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#752f8a" text-anchor="middle">Oldest first</text></g>
+
+</g><g class="jcard" data-i="3"><circle cx="672.3333333333334" cy="34" r="11" fill="#752f8a"/><text x="672.3333333333334" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">3</text><text x="691.3333333333334" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Click again: descending</text>
+<rect x="661.3333333333334" y="58" width="274.6666666666667" height="288" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(661.3333333333334,58)"><rect x="16" y="24" width="242.66666666666669" height="40" rx="6" fill="#f3edf5"/><text x="32" y="49" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Training Date</text><path d="M151.2 44 l4 -5 l4 5z" fill="#94a3b8"/><path d="M151.2 48 l4 5 l4 -5z" fill="#752f8a"/><line x1="16" x2="258.6666666666667" y1="100" y2="100" stroke="#d5dce5"/><text x="32" y="87" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">08/06/2022</text><line x1="16" x2="258.6666666666667" y1="136" y2="136" stroke="#d5dce5"/><text x="32" y="123" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">06/03/2022</text><line x1="16" x2="258.6666666666667" y1="172" y2="172" stroke="#d5dce5"/><text x="32" y="159" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">02/15/2022</text><line x1="16" x2="258.6666666666667" y1="208" y2="208" stroke="#d5dce5"/><text x="32" y="195" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">12/27/2021</text><line x1="16" x2="258.6666666666667" y1="244" y2="244" stroke="#d5dce5"/><text x="32" y="231" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">10/01/2021</text><text x="137.33333333333334" y="268" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#752f8a" text-anchor="middle">Newest first</text></g>
+</g></g></svg></div><div class="jview jset" data-view="filter" data-steps="3" data-step="1" hidden style="--c:#752f8a;--pitch:318.7px"><ol class="sr-only"><li>Open the Type filter</li><li>Choose one type</li><li>Table shows only that type</li></ol><svg class="jsvg" viewBox="0 14 318.7 272.0" data-vb-wide="0 14 318.7 272.0" data-vb-narrow="0 14 318.7 272.0" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><g class="jtrack"><g class="jcard" data-i="1"><circle cx="35.0" cy="34" r="11" fill="#752f8a"/><text x="35.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">1</text><text x="54.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Open the Type filter</text>
+<rect x="24.0" y="58" width="274.6666666666667" height="218" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(24.0,58)"><rect x="16" y="24" width="242.66666666666669" height="40" rx="6" fill="#f3edf5"/><text x="32" y="49" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Type</text><path d="M78 40 h12 l-4.5 5.5 v5 l-3 1.5 v-6.5z" fill="#94a3b8"/><line x1="16" x2="258.6666666666667" y1="100" y2="100" stroke="#d5dce5"/><text x="32" y="87" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Child Care Worker License</text><line x1="16" x2="258.6666666666667" y1="136" y2="136" stroke="#d5dce5"/><text x="32" y="123" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Pediatric CPR and First Aid</text><line x1="16" x2="258.6666666666667" y1="172" y2="172" stroke="#d5dce5"/><text x="32" y="159" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Child Care Worker License</text><line x1="16" x2="258.6666666666667" y1="208" y2="208" stroke="#d5dce5"/><text x="32" y="195" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Pediatric CPR and First Aid</text><path d="M84 46 l0 18 l5 -4 l3.5 7 l3 -1.5 l-3.5 -7 l6.5 0 z" fill="#0f172a" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></g>
+
+</g><g class="jcard" data-i="2"><circle cx="353.6666666666667" cy="34" r="11" fill="#752f8a"/><text x="353.6666666666667" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">2</text><text x="372.6666666666667" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Choose one type</text>
+<rect x="342.6666666666667" y="58" width="274.6666666666667" height="218" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(342.6666666666667,58)"><rect x="16" y="24" width="242.66666666666669" height="40" rx="6" fill="#f3edf5"/><text x="32" y="49" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Type</text><path d="M78 40 h12 l-4.5 5.5 v5 l-3 1.5 v-6.5z" fill="#752f8a"/><line x1="16" x2="258.6666666666667" y1="100" y2="100" stroke="#d5dce5"/><text x="32" y="87" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Child Care Worker License</text><line x1="16" x2="258.6666666666667" y1="136" y2="136" stroke="#d5dce5"/><text x="32" y="123" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Pediatric CPR and First Aid</text><line x1="16" x2="258.6666666666667" y1="172" y2="172" stroke="#d5dce5"/><text x="32" y="159" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Child Care Worker License</text><line x1="16" x2="258.6666666666667" y1="208" y2="208" stroke="#d5dce5"/><text x="32" y="195" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Pediatric CPR and First Aid</text><rect x="28" y="66" width="218.66666666666669" height="124" rx="8" fill="#fff" stroke="#d5dce5" stroke-width="1"/><rect x="28" y="66" width="218.66666666666669" height="124" rx="8" fill="none" stroke="#d5dce5"/><text x="46" y="95" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">All types</text><rect x="34" y="110" width="206.66666666666669" height="32" rx="5" fill="#f3edf5"/><text x="46" y="131" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#752f8a" text-anchor="start">Child Care Worker License</text><text x="46" y="167" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Pediatric CPR and First Aid</text><path d="M151.0666666666667 124 l0 18 l5 -4 l3.5 7 l3 -1.5 l-3.5 -7 l6.5 0 z" fill="#0f172a" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></g>
+
+</g><g class="jcard" data-i="3"><circle cx="672.3333333333334" cy="34" r="11" fill="#752f8a"/><text x="672.3333333333334" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">3</text><text x="691.3333333333334" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Table shows only that type</text>
+<rect x="661.3333333333334" y="58" width="274.6666666666667" height="218" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(661.3333333333334,58)"><rect x="16" y="24" width="242.66666666666669" height="40" rx="6" fill="#f3edf5"/><text x="32" y="49" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Type</text><path d="M78 40 h12 l-4.5 5.5 v5 l-3 1.5 v-6.5z" fill="#752f8a"/><line x1="16" x2="258.6666666666667" y1="100" y2="100" stroke="#d5dce5"/><text x="32" y="87" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Child Care Worker License</text><line x1="16" x2="258.6666666666667" y1="136" y2="136" stroke="#d5dce5"/><text x="32" y="123" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Child Care Worker License</text><rect x="16" y="150" width="242.66666666666669" height="0" rx="6" fill="#fff"/><text x="32" y="170" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#752f8a" text-anchor="start">Showing 2 of 4</text></g>
+</g></g></svg></div><div class="jview jset" data-view="report" data-steps="2" data-step="1" hidden style="--c:#752f8a;--pitch:378.0px"><ol class="sr-only"><li>Tick report types</li><li>View Report</li></ol><svg class="jsvg" viewBox="0 14 378.0 322.0" data-vb-wide="0 14 378.0 322.0" data-vb-narrow="0 14 378.0 322.0" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><g class="jtrack"><g class="jcard" data-i="1"><circle cx="35.0" cy="34" r="11" fill="#752f8a"/><text x="35.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">1</text><text x="54.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Tick report types</text>
+<rect x="24.0" y="58" width="334.0" height="268" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(24.0,58)"><text x="20" y="34" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Report type</text><rect x="20" y="48" width="16" height="16" rx="3" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="46" y="61" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">All</text><rect x="20" y="78" width="16" height="16" rx="3" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="46" y="91" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Academic Education</text><rect x="20" y="108" width="16" height="16" rx="3" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="46" y="121" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Certifications</text><rect x="20" y="138" width="16" height="16" rx="3" fill="#752f8a"/><path d="M24 146.5 l3 3 l5.5 -6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="46" y="151" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Training</text><rect x="20" y="168" width="16" height="16" rx="3" fill="#752f8a"/><path d="M24 176.5 l3 3 l5.5 -6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="46" y="181" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">TTA</text><rect x="20" y="212" width="294.0" height="34" rx="6" fill="#752f8a"/><text x="167.0" y="234" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">View Report</text><path d="M167.0 226 l0 18 l5 -4 l3.5 7 l3 -1.5 l-3.5 -7 l6.5 0 z" fill="#0f172a" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></g>
+
+</g><g class="jcard" data-i="2"><circle cx="413.0" cy="34" r="11" fill="#752f8a"/><text x="413.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">2</text><text x="432.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">View Report</text>
+<rect x="402.0" y="58" width="334.0" height="268" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(402.0,58)"><text x="20" y="34" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="800" fill="#0f172a" text-anchor="start">PDR Report</text><rect x="20" y="52" width="294.0" height="70" rx="6" fill="#f8fafc" stroke="#d5dce5" stroke-width="1"/><text x="34" y="80" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#4e379a" text-anchor="start">Training PDR Report</text><text x="34" y="102" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">IdahoSTARS approved hours: 106</text><rect x="20" y="136" width="294.0" height="70" rx="6" fill="#f8fafc" stroke="#d5dce5" stroke-width="1"/><text x="34" y="164" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#4e379a" text-anchor="start">TTA PDR Report</text><text x="34" y="186" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">Total Hours: 0</text></g>
+</g></g></svg></div><div class="jview jset" data-view="upload" data-steps="2" data-step="1" hidden style="--c:#752f8a;--pitch:378.0px"><ol class="sr-only"><li>Document selected</li><li>Switch to Video</li></ol><svg class="jsvg" viewBox="0 14 378.0 292.0" data-vb-wide="0 14 378.0 292.0" data-vb-narrow="0 14 378.0 292.0" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><g class="jtrack"><g class="jcard" data-i="1"><circle cx="35.0" cy="34" r="11" fill="#752f8a"/><text x="35.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">1</text><text x="54.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Document selected</text>
+<rect x="24.0" y="58" width="334.0" height="238" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(24.0,58)"><text x="20" y="34" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="800" fill="#0f172a" text-anchor="start">Add Document / Video</text><circle cx="28" cy="60" r="7.5" fill="#fff" stroke="#752f8a" stroke-width="1.5"/><circle cx="28" cy="60" r="4" fill="#752f8a"/><text x="44" y="65" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">PDF/Word/Image File</text><circle cx="28" cy="88" r="7.5" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="44" y="93" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Video</text><rect x="20" y="114" width="294.0" height="34" rx="6" fill="#fff" stroke="#752f8a" stroke-width="1.5"/><path d="M38 136 v-9 m-4 4 l4 -4 l4 4" fill="none" stroke="#752f8a" stroke-width="2" stroke-linecap="round"/><text x="52" y="136" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#752f8a" text-anchor="start">Upload PDF/Word/Image</text><path d="M28 88 l0 18 l5 -4 l3.5 7 l3 -1.5 l-3.5 -7 l6.5 0 z" fill="#0f172a" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></g>
+
+</g><g class="jcard" data-i="2"><circle cx="413.0" cy="34" r="11" fill="#752f8a"/><text x="413.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">2</text><text x="432.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Switch to Video</text>
+<rect x="402.0" y="58" width="334.0" height="238" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(402.0,58)"><text x="20" y="34" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="800" fill="#0f172a" text-anchor="start">Add Document / Video</text><circle cx="28" cy="60" r="7.5" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="44" y="65" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">PDF/Word/Image File</text><circle cx="28" cy="88" r="7.5" fill="#fff" stroke="#752f8a" stroke-width="1.5"/><circle cx="28" cy="88" r="4" fill="#752f8a"/><text x="44" y="93" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Video</text><rect x="20" y="114" width="16" height="16" rx="3" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="44" y="126" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">I have permission from my director and</text><text x="44" y="142" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">from the families in my classroom to use</text><text x="44" y="158" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">video for coaching purposes.</text><rect x="20" y="180" width="294.0" height="34" rx="6" fill="#fff" stroke="#752f8a" stroke-width="1.5"/><path d="M38 202 v-9 m-4 4 l4 -4 l4 4" fill="none" stroke="#752f8a" stroke-width="2" stroke-linecap="round"/><text x="52" y="202" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#752f8a" text-anchor="start">Upload Video</text></g>
+</g></g></svg></div><div class="jview jset" data-view="error" data-steps="2" data-step="1" hidden style="--c:#752f8a;--pitch:378.0px"><ol class="sr-only"><li>Submit without the checkbox</li><li>Error explains the fix</li></ol><svg class="jsvg" viewBox="0 14 378.0 342.0" data-vb-wide="0 14 378.0 342.0" data-vb-narrow="0 14 378.0 342.0" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><g class="jtrack"><g class="jcard" data-i="1"><circle cx="35.0" cy="34" r="11" fill="#752f8a"/><text x="35.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">1</text><text x="54.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Submit without the checkbox</text>
+<rect x="24.0" y="58" width="334.0" height="288" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(24.0,58)"><text x="20" y="34" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="800" fill="#0f172a" text-anchor="start">Add Document / Video</text><circle cx="28" cy="60" r="7.5" fill="#fff" stroke="#752f8a" stroke-width="1.5"/><circle cx="28" cy="60" r="4" fill="#752f8a"/><text x="44" y="65" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Video</text><rect x="20" y="82" width="294.0" height="36" rx="6" fill="#f8fafc" stroke="#d5dce5" stroke-width="1"/><text x="34" y="105" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">coaching-circle-time.mp4</text><rect x="20" y="134" width="16" height="16" rx="3" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/><text x="46" y="146" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">I have permission from my director and</text><text x="46" y="162" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">families to use video for coaching.</text><rect x="214.0" y="190" width="100" height="34" rx="6" fill="#752f8a"/><text x="264.0" y="212" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">Submit</text><path d="M272.0 212 l0 18 l5 -4 l3.5 7 l3 -1.5 l-3.5 -7 l6.5 0 z" fill="#0f172a" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></g>
+
+</g><g class="jcard" data-i="2"><circle cx="413.0" cy="34" r="11" fill="#752f8a"/><text x="413.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">2</text><text x="432.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Error explains the fix</text>
+<rect x="402.0" y="58" width="334.0" height="288" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(402.0,58)"><text x="20" y="34" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="800" fill="#0f172a" text-anchor="start">Add Document / Video</text><circle cx="28" cy="60" r="7.5" fill="#fff" stroke="#752f8a" stroke-width="1.5"/><circle cx="28" cy="60" r="4" fill="#752f8a"/><text x="44" y="65" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Video</text><rect x="20" y="82" width="294.0" height="36" rx="6" fill="#f8fafc" stroke="#d5dce5" stroke-width="1"/><text x="34" y="105" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">coaching-circle-time.mp4</text><rect x="18" y="132" width="20" height="20" rx="4" fill="#fff" stroke="#d74500" stroke-width="2"/><text x="46" y="146" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">I have permission from my director and</text><text x="46" y="162" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#475569" text-anchor="start">families to use video for coaching.</text><rect x="20" y="176" width="294.0" height="56" rx="6" fill="#fdf1ea"/><circle cx="38" cy="199" r="8" fill="#d74500"/><text x="38" y="203" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">!</text><text x="54" y="192" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#d74500" text-anchor="start">Please confirm that you have permission to</text><text x="54" y="207" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#d74500" text-anchor="start">use the uploaded video by selecting the</text><text x="54" y="222" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#d74500" text-anchor="start">checkbox above.</text><rect x="214.0" y="244" width="100" height="34" rx="6" fill="#752f8a"/><text x="264.0" y="266" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">Submit</text></g>
+</g></g></svg></div><div class="jview jset" data-view="delete" data-steps="2" data-step="1" hidden style="--c:#752f8a;--pitch:378.0px"><ol class="sr-only"><li>Click the trash icon</li><li>Confirm or cancel</li></ol><svg class="jsvg" viewBox="0 14 378.0 272.0" data-vb-wide="0 14 378.0 272.0" data-vb-narrow="0 14 378.0 272.0" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><g class="jtrack"><g class="jcard" data-i="1"><circle cx="35.0" cy="34" r="11" fill="#752f8a"/><text x="35.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">1</text><text x="54.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Click the trash icon</text>
+<rect x="24.0" y="58" width="334.0" height="218" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(24.0,58)"><text x="20" y="34" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="800" fill="#0f172a" text-anchor="start">View Documents</text><line x1="20" x2="314.0" y1="90" y2="90" stroke="#d5dce5"/><rect x="20" y="60" width="18" height="22" rx="3" fill="#e7eefc"/><text x="48" y="76" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Coaching notes.docx</text><g fill="none" stroke="#d74500" stroke-width="1.6" stroke-linecap="round"><path d="M290.0 65 h14 M294.0 65 v-2 h6 v2 M292.0 65 l1 14 h8 l1 -14"/></g><line x1="20" x2="314.0" y1="134" y2="134" stroke="#d5dce5"/><rect x="20" y="104" width="18" height="22" rx="3" fill="#e7eefc"/><text x="48" y="120" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Lesson plan.pdf</text><g fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round"><path d="M290.0 109 h14 M294.0 109 v-2 h6 v2 M292.0 109 l1 14 h8 l1 -14"/></g><path d="M300.0 72 l0 18 l5 -4 l3.5 7 l3 -1.5 l-3.5 -7 l6.5 0 z" fill="#0f172a" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></g>
+
+</g><g class="jcard" data-i="2"><circle cx="413.0" cy="34" r="11" fill="#752f8a"/><text x="413.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">2</text><text x="432.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">Confirm or cancel</text>
+<rect x="402.0" y="58" width="334.0" height="218" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(402.0,58)"><text x="20" y="34" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="800" fill="#0f172a" text-anchor="start">View Documents</text><line x1="20" x2="314.0" y1="90" y2="90" stroke="#d5dce5"/><rect x="20" y="60" width="18" height="22" rx="3" fill="#e7eefc"/><text x="48" y="76" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Coaching notes.docx</text><g fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round"><path d="M290.0 65 h14 M294.0 65 v-2 h6 v2 M292.0 65 l1 14 h8 l1 -14"/></g><line x1="20" x2="314.0" y1="134" y2="134" stroke="#d5dce5"/><rect x="20" y="104" width="18" height="22" rx="3" fill="#e7eefc"/><text x="48" y="120" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Lesson plan.pdf</text><g fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round"><path d="M290.0 109 h14 M294.0 109 v-2 h6 v2 M292.0 109 l1 14 h8 l1 -14"/></g><rect x="0" y="0" width="334.0" height="218" rx="10" fill="#0f172a" fill-opacity=".35"/><rect x="28" y="60" width="278.0" height="140" rx="10" fill="#fff"/><text x="48" y="92" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="800" fill="#0f172a" text-anchor="start">Confirm</text><text x="48" y="118" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Are you sure you want to delete</text><text x="48" y="136" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">the document?</text><rect x="138.0" y="154" width="72" height="34" rx="6" fill="#fff" stroke="#752f8a" stroke-width="1.5"/><text x="174.0" y="176" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#752f8a" text-anchor="middle">No</text><rect x="220.0" y="154" width="72" height="34" rx="6" fill="#752f8a"/><text x="256.0" y="176" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">Yes</text></g>
+</g></g></svg></div><div class="jview jset" data-view="coaching" data-steps="1" data-step="1" hidden style="--c:#752f8a;--pitch:620.0px"><ol class="sr-only"><li>One row, three ways in</li></ol><svg class="jsvg" viewBox="0 14 620.0 332.0" data-vb-wide="0 14 620.0 332.0" data-vb-narrow="0 14 620.0 332.0" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><g class="jtrack"><g class="jcard" data-i="1"><circle cx="35.0" cy="34" r="11" fill="#752f8a"/><text x="35.0" y="38.5" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">1</text><text x="54.0" y="39" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#0f172a" text-anchor="start">One row, three ways in</text>
+<rect x="24.0" y="58" width="572.0" height="278" rx="10" fill="#fff" stroke="#d5dce5" stroke-width="1"/>
+<g transform="translate(24.0,58)"><rect x="16" y="24" width="540.0" height="40" rx="6" fill="#f3edf5"/><text x="32" y="49" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Coach</text><text x="257.40000000000003" y="49" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Time</text><text x="442.0" y="49" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="800" fill="#0f172a" text-anchor="start">Action</text><line x1="16" x2="556.0" y1="104" y2="104" stroke="#d5dce5"/><text x="32" y="90" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Coach name</text><text x="257.40000000000003" y="90" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#475569" text-anchor="start">2 hrs 2 min</text><g fill="none" stroke="#752f8a" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><rect x="442.0" y="76" width="14" height="18" rx="2"/><path d="M446.0 83 h6 M446.0 88 h6"/><rect x="472.0" y="76" width="14" height="18" rx="2"/><path d="M475.0 81 l2 8 l2 -6 l2 6 l2 -8"/><circle cx="511.0" cy="85" r="9"/><path d="M508.0 80.5 l7 4.5 l-7 4.5z" fill="#752f8a"/></g><path d="M449.0 100 V145 H435.0" fill="none" stroke="#cbb6d1" stroke-width="1.5"/><text x="429.0" y="150" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#4e379a" text-anchor="end">Session notes and action plan</text><path d="M479.0 100 V191 H465.0" fill="none" stroke="#cbb6d1" stroke-width="1.5"/><text x="459.0" y="196" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#4e379a" text-anchor="end">Document preview</text><path d="M511.0 100 V237 H497.0" fill="none" stroke="#cbb6d1" stroke-width="1.5"/><text x="491.0" y="242" font-family="'Nunito Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#4e379a" text-anchor="end">Video player</text></g>
+</g></g></svg></div></div><div class="jrail"><div class="jsteps" role="group" aria-label="Step"></div><p class="jlab" id="jlab"></p><button class="jpause" type="button" aria-pressed="false"><span class="jbars" aria-hidden="true"></span><span class="jtxt">Pause</span></button></div></div></div></div>
+    <div class="cap"><span id="capT"></span><span id="capN"></span></div>
+  </aside>
+</main>
+
+<div class="wipe" id="wipe" aria-hidden="true"><p class="wipe-t"></p></div>
+<div class="note" id="note" role="status">
+  <p class="note-h"><b>note</b><span id="noteN"></span></p>
+  <p id="noteText"></p>
+</div>
+<div class="player" id="player" role="group" aria-label="Notes">
+  <span class="n" id="pN"></span>
+  <button id="pPrev" type="button" aria-label="Previous note">&#8592;</button>
+  <button id="pNext" type="button" aria-label="Next note">&#8594;</button>
+  <button class="x" id="pExit" type="button">done</button>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+
+/* A case study always opens at the top. The browser restores the last
+   scroll position by default, which drops you into the middle of a page
+   you have just chosen to read from the beginning. A real anchor in the
+   URL still wins. */
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+addEventListener("pageshow", () => { if (!location.hash) window.scrollTo(0, 0); });
+/* ══════════════════════════════════════════════════════════════
+   THEME — day / afternoon / night, shared across every page.
+   Edit a palette here and the whole page follows: background,
+   type, surfaces, borders, accent, grain, vignette and shadows.
+   ══════════════════════════════════════════════════════════════ */
+const THEMES = {
+  day: {
+    label:"day",
+    tok:"#4A2BA6", tokBg:"rgba(74,43,166,.07)",
+    passc:"#2F6B45", failc:"#A02233", nac:"rgba(20,22,28,.13)",
+    sky1:"#FFFFFF", mid:"#FAFAFC", sky2:"#F1F2F7",
+    fg:"#14161C", muted:"rgba(20,22,28,.74)", line:"rgba(20,22,28,.16)",
+    edge:"rgba(255,255,255,.95)", glass:"rgba(255,255,255,.82)", glass2:"rgba(255,255,255,.7)",
+    accent:"#5B2BB8", veil:"rgba(255,255,255,.84)", veilMid:"rgba(255,255,255,.52)",
+    glow:"rgba(255,246,214,.8)", haze:"rgba(255,255,255,.42)", bar:"rgba(255,255,255,.6)",
+    shadow:"0 10px 28px rgba(20,22,28,.09)", shadowUp:"0 18px 44px rgba(20,22,28,.16)",
+    solid:"#FFFFFF", halo:"rgba(255,255,255,.85)",
+    grain:".045", vignette:".22", leak:".18", cloud:".4",
+    uguEar:"#36291F", uguEarLine:"#241B15", uguMask:"#3A2E28", uguShade:"rgba(0,0,0,.1)",
+    vacShell:"#1E1E24", vacTop:"#34343F", vacLine:"#0B0B0F", vacDot:"#9D9DB0",
+    wxCloud:"0", wxSun:"0", wxWarm:"0", uguCloud:"#D7E1F5"
+  },
+  afternoon: {
+    label:"afternoon",
+    tok:"#8A3A12", tokBg:"rgba(138,58,18,.08)",
+    passc:"#3F6B3A", failc:"#A32A22", nac:"rgba(78,40,30,.14)",
+    sky1:"#DFD4EC", mid:"#FCE1DA", sky2:"#FDF7F8",
+    fg:"#14161C", muted:"rgba(20,22,28,.74)", line:"rgba(20,22,28,.26)",
+    edge:"rgba(255,255,255,.85)", glass:"rgba(255,251,253,.74)", glass2:"rgba(255,250,252,.6)",
+    accent:"#5B2BB8", veil:"rgba(255,255,255,.76)", veilMid:"rgba(255,255,255,.46)",
+    glow:"rgba(255,226,192,.72)", haze:"rgba(252,236,236,.38)", bar:"rgba(255,246,248,.44)",
+    shadow:"0 10px 30px rgba(140,100,130,.16)", shadowUp:"0 18px 44px rgba(140,100,130,.26)",
+    solid:"#FBF3F5", halo:"rgba(255,255,255,.72)",
+    grain:".09", vignette:".55", leak:".55", cloud:".75",
+    uguEar:"#3B2A1E", uguEarLine:"#271C13", uguMask:"#402F27", uguShade:"rgba(70,30,10,.13)",
+    vacShell:"#261F2A", vacTop:"#3D3344", vacLine:"#110D14", vacDot:"#AE9BAC",
+    wxCloud:"0", wxSun:"0", wxWarm:".85", uguCloud:"#F6D6CE"
+  },
+  night: {
+    label:"night",
+    tok:"#B9A2FF", tokBg:"rgba(185,162,255,.12)",
+    passc:"#6FD39A", failc:"#FF8E86", nac:"rgba(255,255,255,.14)",
+    sky1:"#07040F", mid:"#120C26", sky2:"#1C1136",
+    fg:"#FFFFFF", muted:"rgba(255,255,255,.78)", line:"rgba(255,255,255,.3)",
+    edge:"rgba(255,255,255,.15)", glass:"rgba(30,20,62,.5)", glass2:"rgba(24,15,50,.42)",
+    accent:"#BFA9F8", veil:"rgba(7,4,15,.86)", veilMid:"rgba(7,4,15,.6)",
+    glow:"rgba(196,178,252,.5)", haze:"rgba(7,4,15,.72)", bar:"rgba(10,6,24,.55)",
+    shadow:"0 10px 34px rgba(0,0,0,.42)", shadowUp:"0 16px 46px rgba(0,0,0,.55)",
+    solid:"#0B0620", halo:"rgba(0,0,0,.6)",
+    grain:".15", vignette:"1", leak:".4", cloud:".12",
+    uguEar:"#6E5540", uguEarLine:"#4A3828", uguMask:"#5C4739", uguShade:"rgba(255,255,255,.07)",
+    vacShell:"#E7E4F2", vacTop:"#FBFAFF", vacLine:"#231F2E", vacDot:"#453F58",
+    wxCloud:"0", wxSun:"0", wxWarm:"0", uguCloud:"#BEC8E6"
+  }
+};
+
+const THEME_ICONS = {
+  day:       '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>',
+  afternoon: '<svg viewBox="0 0 24 24"><path d="M12 9V4M8.5 5.5 12 9l3.5-3.5"/><path d="M3 18h18M6 18a6 6 0 0 1 12 0"/></svg>',
+  night:     '<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>'
+};
+
+/* NOTE: the choice lasts for this visit only. Once deployed you can
+   persist it with localStorage.setItem("theme", name) and read it back. */
+let themeAuto = true, themeNow = null;
+
+function byClock(){
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return "day";
+  if (h >= 12 && h < 18) return "afternoon";
+  return "night";
+}
+
+function applyTheme(name){
+  const t = THEMES[name]; if (!t) return;
+  const light = t.fg !== "#FFFFFF";
+  const R = document.documentElement;
+  const set = (k, v) => R.style.setProperty(k, v);
+  set("--sky-1", t.sky1); set("--sky-mid", t.mid); set("--sky-2", t.sky2);
+  set("--ink", t.fg); set("--fg", t.fg); set("--fg-dim", t.line);
+  set("--ink-muted", t.muted); set("--line", t.line); set("--edge", t.edge);
+  set("--ink-70", light ? "rgba(20,22,28,.72)" : "rgba(255,255,255,.74)");
+  set("--ink-45", light ? "rgba(20,22,28,.5)"  : "rgba(255,255,255,.5)");
+  set("--paper", t.glass); set("--paper-2", t.glass2);
+  set("--glow", t.glow);
+  set("--stage-veil", t.label === "night" ? "rgba(255,255,255,0)"
+      : t.label === "afternoon" ? "rgba(255,255,255,.62)"
+      : "rgba(255,255,255,.34)");
+  set("--tok", t.tok); set("--tok-bg", t.tokBg);
+  set("--pass", t.passc); set("--fail", t.failc); set("--na", t.nac);
+  set("--ultra", t.accent); set("--on-solid", light ? "#FFFFFF" : "#14161C");
+  set("--veil", t.veil); set("--veil-mid", t.veilMid);
+  set("--orb-glow", t.glow); set("--haze", t.haze); set("--bar-bg", t.bar);
+  set("--surface-shadow", t.shadow); set("--surface-shadow-hover", t.shadowUp);
+  set("--solid-surface", t.solid); set("--focus-halo", t.halo);
+  set("--grain", t.grain); set("--vignette", t.vignette);
+  set("--leak", t.leak); set("--cloud", t.cloud);
+  set("--ugu-ear", t.uguEar); set("--ugu-ear-line", t.uguEarLine);
+  set("--ugu-mask", t.uguMask); set("--ugu-shade", t.uguShade);
+  set("--vac-shell", t.vacShell); set("--vac-top", t.vacTop);
+  set("--vac-line", t.vacLine); set("--vac-dot", t.vacDot);
+  set("--ugu-wx-cloud", t.wxCloud); set("--ugu-wx-sun", t.wxSun);
+  set("--ugu-wx-warm", t.wxWarm); set("--ugu-cloud", t.uguCloud);
+  if (typeof DUST === "object") DUST.mode = name;
+  themeNow = name;
+  document.querySelectorAll("#tod button").forEach(b => {
+    const isAuto = b.dataset.m === "auto";
+    b.setAttribute("aria-pressed", isAuto ? themeAuto : (!themeAuto && b.dataset.m === name));
+    // `is-now` marks the theme actually showing, whether chosen or resolved by the clock —
+    // that is the icon the collapsed mobile rail displays
+    b.classList.toggle("is-now", !isAuto && b.dataset.m === name);
+  });
+  const ann = document.getElementById("announce");
+  if (ann) ann.textContent = t.label + " theme" + (themeAuto ? ", following your clock" : "");
+}
+
+(function themeSwitcher(){
+  const el = document.getElementById("tod");
+  if (el){
+    el.innerHTML = Object.keys(THEMES).map(m =>
+      `<button data-m="${m}" aria-pressed="false" aria-label="${m} theme" title="${m}">` +
+      `${THEME_ICONS[m]}<span class="sr-only">${m}</span></button>`).join("")
+      + `<button class="auto" data-m="auto" aria-pressed="true" aria-label="Follow my local time">auto</button>`;
+    const compact = () => matchMedia("(max-width:760px)").matches;
+    // on a phone the rail is a status chip first and a control second,
+    // so it always opens showing the live theme and returns to auto on its own
+    const closeRail = () => el.classList.remove("open");
+    el.onclick = e => {
+      // on a phone the rail is collapsed: the first tap opens it
+      if (compact() && !el.classList.contains("open")){ el.classList.add("open"); return; }
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.m === "auto"){ themeAuto = true; applyTheme(byClock()); }
+      else { themeAuto = false; applyTheme(b.dataset.m); }
+      if (compact()) setTimeout(closeRail, 300);
+    };
+    addEventListener("click", e => { if (compact() && !el.contains(e.target)) closeRail(); });
+    addEventListener("keydown", e => { if (e.key === "Escape") closeRail(); });
+    addEventListener("scroll", () => { if (compact() && el.classList.contains("open")) closeRail(); },
+      { passive:true });
+  }
+  applyTheme(byClock());
+  setInterval(() => { if (themeAuto) applyTheme(byClock()); }, 300000);
+})();
+
+
+/* ══════════════════════════════════════════════════════════════
+   ✏️  ONE CASE STUDY = ONE OBJECT. Copy this file per project.
+   Images: drop real files at the paths below. If a file is missing
+   you get a tinted placeholder instead of a broken icon.
+   ══════════════════════════════════════════════════════════════ */
+
+
+const secs = [...document.querySelectorAll(".sec")];
+const arts = [...document.querySelectorAll(".art")];
+const capT = document.getElementById("capT"), capN = document.getElementById("capN");
+function show(key){
+  arts.forEach(a => a.classList.toggle("on", a.dataset.fig === key));
+  const a = arts.find(x => x.dataset.fig === key);
+  if (a){ capT.textContent = a.dataset.cap || ""; capN.textContent = a.dataset.n || ""; }
+}
+new IntersectionObserver(es => {
+  const vis = es.filter(e => e.isIntersecting)
+                .sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
+  if (vis.length) show(vis[0].target.dataset.fig);
+}, { rootMargin:"-58px 0px -55% 0px", threshold:0 }).observe
+  || null;
+const io = new IntersectionObserver(es => {
+  const vis = es.filter(e => e.isIntersecting)
+                .sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
+  if (vis.length) show(vis[0].target.dataset.fig);
+}, { rootMargin:"-58px 0px -55% 0px", threshold:0 });
+secs.forEach(s => io.observe(s));
+show(secs[0].dataset.fig);
+
+const marks = [...document.querySelectorAll("[data-note]")];
+marks.forEach((m,i) => m.dataset.n = i + 1);
+const player = document.getElementById("player"), pN = document.getElementById("pN");
+const prev = document.getElementById("pPrev"), next = document.getElementById("pNext");
+const sw = document.getElementById("sw");
+const bub = document.getElementById("note");
+const bubText = document.getElementById("noteText"), bubN = document.getElementById("noteN");
+let notesOn = false, at = -1;
+function place(el){
+  const r = el.getBoundingClientRect(), w = bub.offsetWidth || 268;
+  let x = r.right + 18, y = r.top + scrollY - 4;
+  if (x + w > innerWidth - 14) x = Math.max(14, r.left + scrollX);
+  if (x + w > innerWidth - 14) x = innerWidth - w - 14;
+  bub.style.left = x + "px"; bub.style.top = y + "px";
+}
+function goto(i){
+  if (!marks.length) return;
+  at = Math.max(0, Math.min(marks.length - 1, i));
+  marks.forEach((m,k) => m.classList.toggle("live", k === at));
+  const m = marks[at];
+  bubText.textContent = m.dataset.note;
+  bubN.textContent = "note " + (at + 1) + " of " + marks.length;
+  m.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+                     ? "auto" : "smooth", block:"center" });
+  setTimeout(() => { place(m); bub.classList.add("on"); }, 240);
+  pN.textContent = (at + 1) + " / " + marks.length;
+  prev.disabled = at === 0; next.disabled = at === marks.length - 1;
+}
+function setNotes(v){
+  notesOn = v;
+  document.documentElement.dataset.notes = v ? "on" : "off";
+  sw.setAttribute("aria-pressed", String(v));
+  player.classList.toggle("on", v);
+  if (v) goto(0);
+  else { bub.classList.remove("on"); marks.forEach(m => m.classList.remove("live")); at = -1; }
+}
+sw.addEventListener("click", () => setNotes(!notesOn));
+next.addEventListener("click", () => goto(at + 1));
+prev.addEventListener("click", () => goto(at - 1));
+document.getElementById("pExit").addEventListener("click", () => setNotes(false));
+marks.forEach((m,i) => m.addEventListener("click", () => { if (notesOn) goto(i); }));
+addEventListener("keydown", e => {
+  if (!notesOn) return;
+  if (e.key === "Escape") setNotes(false);
+  if (e.key === "ArrowRight"){ e.preventDefault(); goto(at + 1); }
+  if (e.key === "ArrowLeft"){ e.preventDefault(); goto(at - 1); }
+});
+addEventListener("scroll", () => { if (notesOn && at >= 0) place(marks[at]); }, { passive:true });
+addEventListener("resize", () => { if (notesOn && at >= 0) place(marks[at]); });
+
+/* ── the document scrolls inside the device ──────────────────────────────
+   The artefact is shown at a readable size and the screen scrolls through it
+   as the reader moves down that section, so a long map or a one-page study is
+   actually legible instead of being shrunk to fit the stage. */
+(() => {
+  function sync(){
+    const art = document.querySelector(".art.on");
+    if (!art) return;
+    const sec = document.querySelector(`.sec[data-fig="${art.dataset.fig}"]`);
+    if (!sec) return;
+    const r = sec.getBoundingClientRect();
+    /* 0 as the section reaches the reading line, 1 as it leaves */
+    const span = r.height + innerHeight * 0.3;
+    const p = Math.max(0, Math.min(1, (innerHeight * 0.78 - r.top) / span));
+    art.querySelectorAll(".dev").forEach(dev => {
+      const scr = dev.querySelector(".scr"),
+            im = scr?.querySelector("img, [data-scroll]");
+      if (!im) return;
+      const over = im.offsetHeight - scr.clientHeight;
+      if (over > 4){
+        dev.classList.add("scrolls");
+        im.style.setProperty("--sy", (-over * p).toFixed(1) + "px");
+        const frac = scr.clientHeight / im.offsetHeight;
+        const bar = dev.querySelector(".scrollbar");
+        if (bar){
+          bar.style.setProperty("--thumb", (frac * 100).toFixed(1) + "%");
+          bar.style.setProperty("--thumbY",
+            ((scr.clientHeight - 12) * (1 - frac) * p).toFixed(1) + "px");
+        }
+      } else {
+        dev.classList.remove("scrolls");
+        im.style.setProperty("--sy", "0px");
+      }
+    });
+  }
+  addEventListener("scroll", () => requestAnimationFrame(sync), { passive:true });
+  addEventListener("resize", sync);
+  addEventListener("load", sync);
+  /* Watch the panels only, never the subtree: sync() itself adds and removes
+     .scrolls on the devices inside .plate, so a subtree observer would be
+     feeding on its own writes and the main thread would never come back. */
+  const mo = new MutationObserver(() => requestAnimationFrame(sync));
+  document.querySelectorAll(".plate .art").forEach(a =>
+    mo.observe(a, { attributes:true, attributeFilter:["class"] }));
+  sync();
+})();
+
+/* ── devices answer the pointer ───────────────────────────────────────────
+   A small tilt toward the cursor, cleared the moment it leaves, so the
+   artefact feels like an object rather than a flat image. Reduced motion
+   skips it entirely. */
+(() => {
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduced) document.querySelectorAll(".art").forEach(art => {
+    art.addEventListener("pointermove", e => {
+      const d = e.target.closest(".dev"); if (!d) return;
+      const r = d.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - .5;
+      const py = (e.clientY - r.top) / r.height - .5;
+      d.style.setProperty("--ry", (px * 9).toFixed(2) + "deg");
+      d.style.setProperty("--rx", (-py * 7).toFixed(2) + "deg");
+    });
+    art.addEventListener("pointerleave", () =>
+      art.querySelectorAll(".dev").forEach(d => {
+        d.style.removeProperty("--rx"); d.style.removeProperty("--ry"); }));
+    art.addEventListener("pointerout", e => {
+      const d = e.target.closest(".dev");
+      if (d && !d.contains(e.relatedTarget)){
+        d.style.removeProperty("--rx"); d.style.removeProperty("--ry"); }
+    });
+  });
+
+  /* click or Enter opens the artefact full size */
+  const lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg");
+  let last = null;
+  const close = () => { lb.classList.remove("on"); lbImg.removeAttribute("src");
+                        if (last) last.focus(); };
+  const open = d => { last = d; lbImg.src = d.querySelector("img")?.src || "";
+                      lbImg.alt = d.querySelector("img")?.alt || "";
+                      lb.classList.add("on"); document.getElementById("lbX").focus(); };
+  document.addEventListener("click", e => {
+    const d = e.target.closest(".zoomable");
+    if (d){ open(d); return; }
+    if (e.target === lb || e.target.id === "lbX") close();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && lb.classList.contains("on")){ close(); return; }
+    if ((e.key === "Enter" || e.key === " ")){
+      const d = document.activeElement?.closest?.(".zoomable");
+      if (d){ e.preventDefault(); open(d); }
+    }
+  });
+})();
+
+/* ── moving from one project to the next ─────────────────────────────────
+   A wipe that covers the screen before the next page loads, so the two
+   studies read as one sequence rather than two separate documents. */
+(() => {
+  const wipe = document.getElementById("wipe");
+  if (!wipe) return;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll("a[data-move]").forEach(a => {
+    a.addEventListener("click", e => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      const href = a.getAttribute("href");
+      if (!href || href.startsWith("#")) return;
+      if (reduced) return;                  // let it navigate plainly
+      e.preventDefault();
+      wipe.querySelector(".wipe-t").textContent = a.dataset.move;
+      wipe.classList.add("on");
+      setTimeout(() => { location.href = href; }, 620);
+    });
+  });
+  /* coming back from a cached page, make sure the wipe is not left up */
+  addEventListener("pageshow", () => wipe.classList.remove("on"));
+})();
+
+
+
+(() => {
+  const calm = matchMedia("(prefers-reduced-motion: reduce)");
+  document.querySelectorAll(".jp").forEach(jp => {
+    const labels = JSON.parse(jp.dataset.labels || "{}");
+    const tabs   = [...jp.querySelectorAll(".jtab")];
+    const views  = [...jp.querySelectorAll(".jview")];
+    const rail   = jp.querySelector(".jsteps");
+    const lab    = jp.querySelector(".jlab");
+    const pause  = jp.querySelector(".jpause");
+    let live = views[0], timer = null, seen = false;
+    const art = jp.closest(".art");          // null on a standalone page
+
+    const playing = () => pause.getAttribute("aria-pressed") === "false"
+                          && !calm.matches && seen
+                          && (!art || art.classList.contains("on"));
+
+    function paint(){
+      const n = +live.dataset.step;
+      [...rail.children].forEach(b =>
+        b.setAttribute("aria-current", String(+b.dataset.n === n)));
+      const set = labels[live.dataset.view] || [];
+      lab.textContent = set[n - 1] || "";
+    }
+    function go(n){
+      const max = +live.dataset.steps;
+      const was = +live.dataset.step;
+      const nxt = ((n - 1 + max) % max) + 1;
+      if (was === max && nxt === 1){          // the loop cuts, it does not rewind
+        live.classList.add("nopan");
+        requestAnimationFrame(() => requestAnimationFrame(
+          () => live.classList.remove("nopan")));
+      }
+      live.dataset.step = nxt;
+      paint();
+    }
+    function rail_for(){
+      rail.textContent = "";
+      const max = +live.dataset.steps;
+      for (let i = 1; i <= max; i++){
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "jstep"; b.dataset.n = i;
+        b.textContent = i; b.setAttribute("aria-label", "Step " + i);
+        b.addEventListener("click", () => { hold(true); go(i); });
+        rail.appendChild(b);
+      }
+      paint();
+    }
+    function show(tab){
+      tabs.forEach(t => { const on = t === tab;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1; });
+      views.forEach(v => v.hidden = v.dataset.view !== tab.dataset.go);
+      live = views.find(v => v.dataset.view === tab.dataset.go);
+      jp.style.setProperty("--c", tab.style.getPropertyValue("--c"));
+      live.dataset.step = 1;
+      rail_for(); tick();
+    }
+    function hold(on){
+      pause.setAttribute("aria-pressed", String(on));
+      pause.querySelector(".jtxt").textContent = on ? "Play" : "Pause";
+      tick();
+    }
+    function tick(){
+      clearInterval(timer); timer = null;
+      if (!playing()) return;
+      timer = setInterval(() => go(+live.dataset.step + 1), 2600);
+    }
+
+    tabs.forEach((t, i) => {
+      t.tabIndex = i ? -1 : 0;
+      t.addEventListener("click", () => show(t));
+      t.addEventListener("keydown", e => {
+        const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        const nx = tabs[(i + d + tabs.length) % tabs.length];
+        nx.focus(); show(nx);
+      });
+    });
+    pause.addEventListener("click", () => hold(pause.getAttribute("aria-pressed") === "false"));
+    calm.addEventListener("change", tick);
+
+    // only runs while someone can see it, and only one card wide when narrow
+    new IntersectionObserver(es => { seen = es[0].isIntersecting; tick(); },
+      { threshold: .25 }).observe(jp);
+    if (art) new MutationObserver(tick).observe(art,
+      { attributes:true, attributeFilter:["class"] });
+    new ResizeObserver(es => {
+      const narrow = es[0].contentRect.width < 560;
+      jp.dataset.narrow = narrow ? "1" : "0";
+      jp.querySelectorAll(".jsvg").forEach(s => {
+        const vb = narrow ? (s.dataset.vbNarrow || "40 228 398 614")
+                          : (s.dataset.vbWide   || "40 228 772 614");
+        s.setAttribute("viewBox", vb);
+      });
+    }).observe(jp);
+
+    rail_for();
+  });
+})();
+
+
+/* the record panel steps on its own; the player brings its own driver */
+(() => {
+  const calm = matchMedia("(prefers-reduced-motion: reduce)");
+  const timers = new WeakMap();
+  function stop(ui){ const t = timers.get(ui); if (t){ clearInterval(t); timers.delete(ui); } }
+  function play(ui){
+    stop(ui);
+    const n = +ui.dataset.steps || 4;
+    if (calm.matches){ ui.dataset.step = n; return; }
+    let i = 0; ui.dataset.step = 0;
+    timers.set(ui, setInterval(() => {
+      i = i + 1; if (i > n + 1) i = 0;
+      ui.dataset.step = Math.min(i, n);
+    }, 1800));
+  }
+  function sync(){
+    document.querySelectorAll(".art").forEach(a => {
+      const on = a.classList.contains("on");
+      a.querySelectorAll(".ui").forEach(ui => on ? (timers.has(ui) || play(ui)) : stop(ui));
+    });
+  }
+  const mo = new MutationObserver(sync);
+  document.querySelectorAll(".plate .art").forEach(a =>
+    mo.observe(a, { attributes:true, attributeFilter:["class"] }));
+  calm.addEventListener("change", sync);
+  sync();
+})();
+
+</script>
+</body>
+</html>
