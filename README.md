@@ -22,3 +22,7 @@ Source for **https://www.gracegwedesign.com/**. Static HTML, CSS and JavaScript,
 ## Deployment
 
 GitHub is the source of truth. Connect the `main` branch to Vercel and set **Framework Preset: Other**; no build command required, output at project root. This repository is migrated from a Vercel Drop archive. Verify `/`, `/about`, all case pages, `/assets`, and the Ugu chat after deployment.
+
+## Employer-centered case studies (November 2026)
+
+All seven case studies now start with the same concise employer-facing story: challenge, audience, individual responsibility, research or other evidence, insight, decision, rationale, and verified result. The visual storyline uses shared `assets/employer-story.css`. Longer project evidence and original visual artifacts remain available below, with context-specific jump links.
